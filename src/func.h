@@ -9,4 +9,4 @@ void func2(int a, int b);
 
 void func3_memory_leak();
 
-#endif // FUNC_H    
+#endif  // FUNC_H
