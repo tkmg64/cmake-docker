@@ -14,3 +14,8 @@ TEST(test_func, func2) {
   func2(1, 2);
   EXPECT_EQ(1, 1);
 }
+
+TEST(test_func, func3_memory_leak) {
+  func3_memory_leak();
+  EXPECT_EQ(1, 1);
+}

@@ -13,3 +13,8 @@ void func2(int a, int b) {
         std::cout << "a is less than or equal to b" << std::endl;
     }
 }
+
+void func3_memory_leak() {
+    int* ptr = new int[10];
+    // メモリリークを引き起こすために、ポインタを解放しない
+}

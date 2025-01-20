@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y \
     g++ \
     gdb \
     locales \
+    valgrind \
     && rm -rf /var/lib/apt/lists/* \
     && locale-gen en_US.UTF-8
 
