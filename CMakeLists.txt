@@ -19,6 +19,10 @@ FetchContent_Declare(
   URL https://github.com/google/googletest/archive/refs/tags/v1.13.0.zip)
 FetchContent_MakeAvailable(googletest)
 
+# Boostライブラリの設定を追加
+find_package(Boost REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
+
 # サブディレクトリの追加
 add_subdirectory(src)
 add_subdirectory(test)

@@ -21,4 +21,7 @@ target_include_directories(${TestBinary} PUBLIC
   ${MY_TEST_INCLUDE_PATH}
   )
 
-target_link_libraries(${TestBinary} gtest_main)
+target_link_libraries(${TestBinary} 
+  gtest_main
+  ${Boost_LIBRARIES}
+)

@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y \
     locales \
     valgrind \
     cppcheck \
+    libboost-all-dev \
     && rm -rf /var/lib/apt/lists/* \
     && locale-gen en_US.UTF-8
 
