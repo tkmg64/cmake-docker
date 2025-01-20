@@ -10,7 +10,7 @@ find . -name "*.gcda" -delete
 source_dir="build/test"
 
 # コピー先ディレクトリのパス
-destination_dir="build/cov"
+destination_dir="analysis_results/coverage"
 
 # ディレクトリを作成
 mkdir -p "$destination_dir"

@@ -37,3 +37,6 @@ valgrind_output/
 # Fortran files
 *.mod
 *.smod
+
+# Analysis results
+analysis_results/

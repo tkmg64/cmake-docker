@@ -11,7 +11,7 @@ if [ ! -f "$EXECUTABLE" ]; then
 fi
 
 # valgrind用のディレクトリを作成
-VALGRIND_DIR="./valgrind_output"
+VALGRIND_DIR="./analysis_results/valgrind"
 mkdir -p "$VALGRIND_DIR"
 
 # valgrindのオプション設定
