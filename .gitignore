@@ -1,35 +1,39 @@
-# Prerequisites
+# OS generated files
+.DS_Store
+
+# Build directories
+build/
+valgrind_output/
+
+# C++ Prerequisites
 *.d
 
-# Compiled Object files
+# C++ Object files
 *.slo
 *.lo
 *.o
 *.obj
 
-# Precompiled Headers
+# C++ Precompiled Headers
 *.gch
 *.pch
 
-# Compiled Dynamic libraries
+# C++ Libraries
+## Dynamic libraries
 *.so
 *.dylib
 *.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
+## Static libraries
 *.lai
 *.la
 *.a
 *.lib
 
-# Executables
+# C++ Executables
 *.exe
 *.out
 *.app
-build/
-.DS_Store
-valgrind_output/
+
+# Fortran files
+*.mod
+*.smod
