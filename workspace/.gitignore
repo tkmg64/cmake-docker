@@ -1,0 +1,17 @@
+# CMake/ビルド関連のディレクトリ
+build/
+build_coverage/
+
+# カバレッジレポートの出力ディレクトリ
+coverage_report/
+
+# IDE/エディタ固有の設定ファイル
+.vscode/
+.idea/
+
+# macOS固有のファイル
+.DS_Store
+
+# Vimのバックアップファイル
+*.swp
+*.swo

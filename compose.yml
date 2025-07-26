@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  cpp-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cpp-dev-container
+    volumes:
+      # ホストのworkspaceディレクトリをコンテナの/workspaceにマウントします
+      - ./workspace:/workspace
+    # コンテナを起動し続けるためにttyをtrueにします
+    tty: true
+    # コンテナにアタッチするためにstdin_openをtrueにします
+    stdin_open: true
