@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-#include "device.h"
+#include "app1/device/device.h"
 
 namespace {
 

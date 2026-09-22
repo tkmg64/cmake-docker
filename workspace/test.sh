@@ -54,7 +54,9 @@ run_cppcheck() {
   echo "--- 静的解析 (cppcheck) を実行しています ---"
   echo "----------------------------------------"
   local log_file="$LOG_DIR/static_check.log"
-  cppcheck --enable=all --suppress=missingIncludeSystem app1/src app2/src 2>&1 | tee "$log_file"
+  cppcheck --enable=all --suppress=missingIncludeSystem \
+    -I app1/include -I app2/include \
+    app1/include app1/src app2/include app2/src 2>&1 | tee "$log_file"
   echo "--> cppcheck のログを保存しました: $log_file"
 }
 
@@ -69,10 +71,10 @@ run_clang_tidy() {
   
   # compile_commands.json を利用してソースコードをチェック
   local source_files=(
-    app1/src/app1.cpp
-    app1/src/main1.cpp
+    app1/src/math/add.cpp
+    app1/src/main.cpp
     app2/src/app2.cpp
-    app2/src/main2.cpp
+    app2/src/main.cpp
   )
   
   clang-tidy -p build "${source_files[@]}" 2>&1 | tee "$log_file"

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "app2.h"
+#include "app2/app2.h"
 
 // concatenate関数のテストケース
 TEST(ConcatenateTest, Basic) {

@@ -1,12 +1,12 @@
 /**
- * @file main1.cpp
+ * @file main.cpp
  * @brief app1 アプリケーションのエントリーポイント
  */
 
 #include <cstdint>
 #include <iostream>
 
-#include "app1.h"
+#include "app1/math/add.h"
 
 /**
  * @brief app1 のメイン関数

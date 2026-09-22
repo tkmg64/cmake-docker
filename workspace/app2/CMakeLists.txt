@@ -1,10 +1,18 @@
 # アプリケーションのロジック部分をライブラリとして定義
-add_library(app2_lib src/app2.cpp src/app2.h)
-target_include_directories(app2_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+add_library(app2_lib
+    src/app2.cpp
+    include/app2/app2.h
+)
+target_include_directories(app2_lib
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
 target_link_libraries(app2_lib PUBLIC project_warnings)
 
 # main関数を含むソースから実行可能ファイルを作成
-add_executable(app2 src/main2.cpp)
+add_executable(app2 src/main.cpp)
 target_link_libraries(app2 PRIVATE app2_lib project_warnings)
 install(TARGETS app2 DESTINATION ${CMAKE_INSTALL_BINDIR})
 

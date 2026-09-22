@@ -9,11 +9,11 @@ OUTPUT_LANGUAGE        = Japanese
 DOXYFILE_ENCODING      = UTF-8
 
 # 入力設定
-INPUT                  = docs_src app1/src app2/src
+INPUT                  = docs_src app1/include app1/src app2/include app2/src
 RECURSIVE              = YES
 FILE_PATTERNS          = *.cpp *.h *.hpp *.dox
-EXCLUDE_PATTERNS       = */build/* */build_coverage/* */_deps/* */test/*
-STRIP_FROM_PATH        = docs_src
+EXCLUDE_PATTERNS       = */build/* */build_release/* */build_coverage/* */_deps/* */test/*
+STRIP_FROM_PATH        = docs_src app1/include app2/include
 
 # 詳細設計書向け抽出設定 (非公開要素や内部実装も漏れなく抽出)
 EXTRACT_ALL            = YES

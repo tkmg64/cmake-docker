@@ -37,20 +37,30 @@
  * 
  * ```
  * MultiAppProject
- *  ├── app1 (算術演算 & デバイス制御モジュール)
- *  │    ├── app1_lib: 算術演算・通信ロジックライブラリ (app1.h / device.h)
- *  │    ├── app1: スタンドアロン実行バイナリ (main1.cpp)
- *  │    └── app1_test: ユニットテスト & モックテスト (test1.cpp / test_mock.cpp)
- *  └── app2 (文字列処理モジュール)
- *       ├── app2_lib: 文字列処理ロジックライブラリ (app2.h / app2.cpp)
- *       ├── app2: スタンドアロン実行バイナリ (main2.cpp)
- *       └── app2_test: ユニットテスト (test2.cpp)
+ *  ├── app1 (算術演算 & デバイス制御モジュール: ドメイン分割構成)
+ *  │    ├── include/app1/
+ *  │    │    ├── math/add.h        (算術演算インターフェース)
+ *  │    │    └── device/device.h   (抽象通信インターフェース)
+ *  │    ├── src/
+ *  │    │    ├── math/add.cpp      (算術演算実装)
+ *  │    │    └── main.cpp          (エントリーポイント)
+ *  │    └── test/
+ *  │         ├── test_math.cpp     (算術演算単体テスト)
+ *  │         └── test_mock.cpp     (Google Mock テスト)
+ *  └── app2 (文字列処理モジュール: シンプル構成)
+ *       ├── include/app2/
+ *       │    └── app2.h            (文字列処理インターフェース)
+ *       ├── src/
+ *       │    ├── app2.cpp          (文字列処理実装)
+ *       │    └── main.cpp          (エントリーポイント)
+ *       └── test/
+ *            └── test2.cpp         (文字列処理単体テスト)
  * ```
  * 
  * ### モジュール一覧
  * 
- * 1. **[app1 モジュール](app1_8h.html)**:
- *    - 責務: 32ビット整数の安全な算術演算ロジック、およびデバイス通信インターフェースを提供。
+ * 1. **[app1 モジュール](add_8h.html)**:
+ *    - 責務: 32ビット整数の安全な算術演算ロジック (`math/`)、およびデバイス通信インターフェース (`device/`) を提供。
  *    - 主要インターフェース: @ref add(std::int32_t, std::int32_t), @ref IDevice, @ref DeviceController
  * 2. **[app2 モジュール](app2_8h.html)**:
  *    - 責務: `std::string_view` を用いた効率的かつ安全な文字列操作・結合ロジックを提供。

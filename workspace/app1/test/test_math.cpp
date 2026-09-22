@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "app1.h"
+#include "app1/math/add.h"
 
 // add関数のテストケース
 TEST(AddTest, PositiveNumbers) {

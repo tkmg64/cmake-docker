@@ -37,6 +37,7 @@
 ### 2. アプリケーション・モジュール構成の変更
 - [ ] **サンプルモジュール (`workspace/app1`, `app2`) の置き換え**:
   - サンプルの `app1/`, `app2/` をご自身のアプリケーション名・ライブラリ名にリネームまたは新規作成
+  - 本テンプレートの標準レイアウト（`include/<名前空間>/` に公開ヘッダー、`src/` に実装コード）を参考にコードを配置
   - `workspace/CMakeLists.txt` 内の `add_subdirectory(app1)` を自身のディレクトリ名に修正
   - 各サブディレクトリの `CMakeLists.txt` で、パッケージング対象とする実行ファイルに `install(TARGETS <バイナリ名> DESTINATION ${CMAKE_INSTALL_BINDIR})` を記述
 
@@ -342,18 +343,27 @@ docker compose down
 │   ├── doc.sh          # Doxygen ドキュメント生成スクリプト
 │   ├── package.sh      # 配布用アーカイブ (.tar.gz) 生成スクリプト
 │   ├── clean.sh        # クリーンアップスクリプト
-│   ├── app1/           # サンプルアプリケーション 1 (算術演算 & モックテスト)
+│   ├── app1/           # サンプルアプリケーション 1 (ドメイン分割構成のお手本)
 │   │   ├── CMakeLists.txt
+│   │   ├── include/
+│   │   │   └── app1/
+│   │   │       ├── math/add.h        # 算術演算公開ヘッダー
+│   │   │       └── device/device.h   # 抽象通信公開ヘッダー
 │   │   ├── src/
-│   │   │   ├── app1.cpp / app1.h
-│   │   │   ├── device.h  # 抽象通信インターフェース
-│   │   │   └── main1.cpp
+│   │   │   ├── math/add.cpp          # 算術演算ロジック実装
+│   │   │   └── main.cpp              # main 関数
 │   │   └── test/
-│   │       ├── test1.cpp # GoogleTest 単体テスト
-│   │       └── test_mock.cpp # GoogleMock モックテスト
-│   └── app2/           # サンプルアプリケーション 2 (文字列処理)
-│   │   ├── CMakeLists.txt
-│   │   ├── src/
-│   │   └── test/
+│   │       ├── test_math.cpp         # 算術演算単体テスト
+│   │       └── test_mock.cpp         # Google Mock モックテスト
+│   └── app2/           # サンプルアプリケーション 2 (シンプル構成のお手本)
+│       ├── CMakeLists.txt
+│       ├── include/
+│       │   └── app2/
+│       │       └── app2.h            # 文字列処理公開ヘッダー
+│       ├── src/
+│       │   ├── app2.cpp              # 文字列処理ロジック実装
+│       │   └── main.cpp              # main 関数
+│       └── test/
+│           └── test2.cpp             # 文字列処理単体テスト
 └── README.md           # 本ドキュメント
 ```

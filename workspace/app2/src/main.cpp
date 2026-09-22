@@ -1,12 +1,12 @@
 /**
- * @file main2.cpp
+ * @file main.cpp
  * @brief app2 アプリケーションのエントリーポイント
  */
 
 #include <iostream>
 #include <string>
 
-#include "app2.h"
+#include "app2/app2.h"
 
 /**
  * @brief app2 のメイン関数

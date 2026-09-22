@@ -3,8 +3,8 @@
 #include <cstdint>
 
 /**
- * @file app1.h
- * @brief 算術演算モジュール (app1) の公開インターフェース定義
+ * @file add.h
+ * @brief 算術演算モジュールの公開インターフェース定義
  * @author 開発チーム
  * @date 2026-09-22
  */
@@ -31,6 +31,6 @@
  *       - 例外を送出しないため noexcept を明記。
  *       - 戻り値の確認漏れを防止するため [[nodiscard]] を付与。
  *
- * @see main1.cpp
+ * @see main.cpp
  */
 [[nodiscard]] std::int32_t add(std::int32_t lhs, std::int32_t rhs) noexcept;

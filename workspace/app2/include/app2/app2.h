@@ -31,6 +31,6 @@
  *       - 引数に std::string_view を使用し、不要な一時オブジェクト生成やヒープ確保を回避。
  *       - 戻り値の確認漏れを防止するため [[nodiscard]] を付与。
  *
- * @see main2.cpp
+ * @see main.cpp
  */
 [[nodiscard]] std::string concatenate(std::string_view first, std::string_view second);
