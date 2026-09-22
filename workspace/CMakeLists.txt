@@ -37,7 +37,7 @@ if(ENABLE_CLANG_TIDY)
     endif()
 endif()
 
-# プロジェクト共通の警告フラグ設定 (MISRA C++:2023 準拠強化)
+# プロジェクト共通の警告フラグ設定 (MISRA C++:2023 などの安全ガイドラインを参考)
 add_library(project_warnings INTERFACE)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(project_warnings INTERFACE
@@ -85,3 +85,17 @@ enable_testing()
 # サブプロジェクトを追加
 add_subdirectory(app1)
 add_subdirectory(app2)
+
+#
+# Doxygen ドキュメント生成ターゲット (doc)
+#
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+    add_custom_target(doc
+        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "Generating API documentation with Doxygen..."
+        VERBATIM
+    )
+endif()
+

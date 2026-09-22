@@ -1,0 +1,85 @@
+# Doxyfile for MultiAppProject ソフトウェア詳細設計書
+
+PROJECT_NAME           = "MultiAppProject ソフトウェア詳細設計書"
+PROJECT_NUMBER         = "1.0.0"
+PROJECT_BRIEF          = "C++17 / MISRA C++:2023 を参考としたアーキテクチャおよびモジュール詳細仕様"
+OUTPUT_DIRECTORY       = docs
+CREATE_SUBDIRS         = NO
+OUTPUT_LANGUAGE        = Japanese
+DOXYFILE_ENCODING      = UTF-8
+
+# 入力設定
+INPUT                  = docs_src app1/src app2/src
+RECURSIVE              = YES
+FILE_PATTERNS          = *.cpp *.h *.hpp *.dox
+EXCLUDE_PATTERNS       = */build/* */build_coverage/* */_deps/* */test/*
+STRIP_FROM_PATH        = docs_src
+
+# 詳細設計書向け抽出設定 (非公開要素や内部実装も漏れなく抽出)
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = YES
+EXTRACT_PRIV_VIRTUAL   = YES
+EXTRACT_PACKAGE        = YES
+EXTRACT_STATIC         = YES
+EXTRACT_LOCAL_CLASSES  = YES
+EXTRACT_LOCAL_METHODS  = YES
+EXTRACT_ANON_NSPACES   = YES
+INTERNAL_DOCS          = YES
+HIDE_UNDOC_MEMBERS     = NO
+HIDE_UNDOC_CLASSES     = NO
+HIDE_FRIEND_COMPOUNDS  = NO
+HIDE_IN_BODY_DOCS      = NO
+
+# 詳細セクションの常時展開 (詳細設計書の体裁を担保)
+ALWAYS_DETAILED_SEC    = YES
+REPEAT_BRIEF           = YES
+BRIEF_MEMBER_DESC      = YES
+SHOW_INCLUDE_FILES     = YES
+SHOW_GROUPED_MEMB_INC  = YES
+INLINE_INHERITED_MEMB  = YES
+JAVADOC_AUTOBRIEF      = YES
+QT_AUTOBRIEF           = YES
+MULTILINE_CPP_IS_BRIEF = YES
+
+# ソースコード閲覧と実装ロジックの埋め込み (トレーサビリティ)
+SOURCE_BROWSER         = YES
+INLINE_SOURCES         = YES
+STRIP_CODE_COMMENTS    = NO
+REFERENCED_BY_RELATION = YES
+REFERENCES_RELATION    = YES
+REFERENCES_LINK_SOURCE = YES
+
+# HTML 出力設定 & 階層ツリービュー
+GENERATE_HTML          = YES
+HTML_OUTPUT            = html
+HTML_FILE_EXTENSION    = .html
+HTML_COLORSTYLE_HUE    = 210
+HTML_COLORSTYLE_SAT    = 100
+HTML_COLORSTYLE_GAMMA  = 80
+GENERATE_TREEVIEW      = YES
+TREEVIEW_WIDTH         = 250
+SEARCHENGINE           = YES
+
+# LaTeX / その他形式は無効化 (高速化)
+GENERATE_LATEX         = NO
+GENERATE_RTF           = NO
+GENERATE_MAN           = NO
+GENERATE_XML           = NO
+
+# Graphviz / DOT グラフ描画設定 (UML・コールグラフ・依存関係図)
+HAVE_DOT               = YES
+DOT_NUM_THREADS        = 0
+DOT_IMAGE_FORMAT       = svg
+INTERACTIVE_SVG        = YES
+CLASS_GRAPH            = YES
+COLLABORATION_GRAPH    = YES
+GROUP_GRAPHS           = YES
+UML_LOOK               = YES
+TEMPLATE_RELATIONS     = YES
+INCLUDE_GRAPH          = YES
+INCLUDED_BY_GRAPH      = YES
+CALL_GRAPH             = YES
+CALLER_GRAPH           = YES
+DIRECTORY_GRAPH        = YES
+DOT_GRAPH_MAX_NODES    = 50
+MAX_DOT_GRAPH_DEPTH    = 0

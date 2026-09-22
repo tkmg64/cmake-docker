@@ -3,13 +3,14 @@
 # test.sh - テスト、静的解析、メモリ解析、カバレッジ計測を実行する統合スクリプト
 #
 # 使い方:
-# ./test.sh [unit|static|tidy|memory|coverage|all]
+# ./test.sh [unit|static|tidy|memory|coverage|doc|all]
 #
 # 引数なし or unit: ユニットテスト (ctest) を実行
 # static:         静的解析 (cppcheck + clang-tidy) を実行
-# tidy:           静的解析 (clang-tidy / MISRA C++:2023 準拠チェック) を実行
+# tidy:           静的解析 (clang-tidy / MISRA C++:2023 参考ルール) を実行
 # memory:         メモリ解析 (valgrind) を実行
 # coverage:       カバレッジ計測を実行
+# doc:            Doxygen API ドキュメントを生成
 # all:            unit, static, memory, coverage の全てのチェックを実行
 #
 
@@ -53,11 +54,11 @@ run_cppcheck() {
   echo "--> cppcheck のログを保存しました: $log_file"
 }
 
-# 静的解析 (clang-tidy: MISRA C++:2023 / AUTOSAR / CERT 準拠チェック) の実行
+# 静的解析 (clang-tidy: MISRA C++:2023 / AUTOSAR / CERT などを参考にしたルール) の実行
 run_clang_tidy() {
   echo ""
   echo "--------------------------------------------------------"
-  echo "--- 静的解析 (clang-tidy: MISRA C++:2023 準拠) を実行しています ---"
+  echo "--- 静的解析 (clang-tidy: MISRA C++:2023 参考) を実行しています ---"
   echo "--------------------------------------------------------"
   ensure_build
   local log_file="$LOG_DIR/clang_tidy.log"
@@ -180,6 +181,9 @@ for arg in "$@"; do
     coverage)
       run_coverage
       ;;
+    doc)
+      ./doc.sh
+      ;;
     all)
       run_unit_test
       run_static_check
@@ -188,7 +192,7 @@ for arg in "$@"; do
       ;;
     *)
       echo "エラー: 不明な引数 '$arg'" >&2
-      echo "使い方: $0 [unit|static|tidy|memory|coverage|all]" >&2
+      echo "使い方: $0 [unit|static|tidy|memory|coverage|doc|all]" >&2
       exit 1
       ;;
   esac

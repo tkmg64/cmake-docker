@@ -26,6 +26,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     cppcheck \
     libboost-all-dev \
     sudo \
+    doxygen \
+    graphviz \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/* \
     && locale-gen en_US.UTF-8
