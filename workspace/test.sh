@@ -3,10 +3,11 @@
 # test.sh - テスト、静的解析、メモリ解析、カバレッジ計測を実行する統合スクリプト
 #
 # 使い方:
-# ./test.sh [unit|static|memory|coverage|all]
+# ./test.sh [unit|static|tidy|memory|coverage|all]
 #
 # 引数なし or unit: ユニットテスト (ctest) を実行
-# static:         静的解析 (cppcheck) を実行
+# static:         静的解析 (cppcheck + clang-tidy) を実行
+# tidy:           静的解析 (clang-tidy / MISRA C++:2023 準拠チェック) を実行
 # memory:         メモリ解析 (valgrind) を実行
 # coverage:       カバレッジ計測を実行
 # all:            unit, static, memory, coverage の全てのチェックを実行
@@ -41,15 +42,42 @@ run_unit_test() {
   echo "--> ユニットテストのログを保存しました: $log_file"
 }
 
-# 静的解析の実行
-run_static_check() {
+# 静的解析 (cppcheck) の実行
+run_cppcheck() {
   echo ""
   echo "----------------------------------------"
   echo "--- 静的解析 (cppcheck) を実行しています ---"
   echo "----------------------------------------"
   local log_file="$LOG_DIR/static_check.log"
   cppcheck --enable=all --suppress=missingIncludeSystem app1/src app2/src 2>&1 | tee "$log_file"
-  echo "--> 静的解析のログを保存しました: $log_file"
+  echo "--> cppcheck のログを保存しました: $log_file"
+}
+
+# 静的解析 (clang-tidy: MISRA C++:2023 / AUTOSAR / CERT 準拠チェック) の実行
+run_clang_tidy() {
+  echo ""
+  echo "--------------------------------------------------------"
+  echo "--- 静的解析 (clang-tidy: MISRA C++:2023 準拠) を実行しています ---"
+  echo "--------------------------------------------------------"
+  ensure_build
+  local log_file="$LOG_DIR/clang_tidy.log"
+  
+  # compile_commands.json を利用してソースコードをチェック
+  local source_files=(
+    app1/src/app1.cpp
+    app1/src/main1.cpp
+    app2/src/app2.cpp
+    app2/src/main2.cpp
+  )
+  
+  clang-tidy -p build "${source_files[@]}" 2>&1 | tee "$log_file"
+  echo "--> clang-tidy のログを保存しました: $log_file"
+}
+
+# 静的解析の統合実行 (cppcheck + clang-tidy)
+run_static_check() {
+  run_cppcheck
+  run_clang_tidy
 }
 
 # メモリ解析の実行
@@ -143,6 +171,9 @@ for arg in "$@"; do
     static)
       run_static_check
       ;;
+    tidy)
+      run_clang_tidy
+      ;;
     memory)
       run_memory_check
       ;;
@@ -157,7 +188,7 @@ for arg in "$@"; do
       ;;
     *)
       echo "エラー: 不明な引数 '$arg'" >&2
-      echo "使い方: $0 [unit|static|memory|coverage|all]" >&2
+      echo "使い方: $0 [unit|static|tidy|memory|coverage|all]" >&2
       exit 1
       ;;
   esac

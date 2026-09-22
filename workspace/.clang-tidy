@@ -1,0 +1,27 @@
+---
+# MISRA C++:2023 / AUTOSAR / CERT / HICPP 準拠を支援する Clang-Tidy 設定
+Checks: >
+  -*,
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  cert-*,
+  cppcoreguidelines-*,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -cppcoreguidelines-avoid-magic-numbers,
+  hicpp-*,
+  -hicpp-no-array-decay,
+  -hicpp-avoid-c-arrays,
+  modernize-*,
+  -modernize-use-trailing-return-type,
+  performance-*,
+  readability-*,
+  -readability-magic-numbers
+
+WarningsAsErrors: ''
+
+# 外部ライブラリ（googletest等）のヘッダー警告を抑制し、プロジェクト内ヘッダーのみ対象とする
+HeaderFilterRegex: 'app[0-9]+/.*'
+
+FormatStyle: file
+...

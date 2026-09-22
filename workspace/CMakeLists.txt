@@ -27,7 +27,17 @@ if(CMAKE_BUILD_TYPE STREQUAL "Coverage")
     endif()
 endif()
 
-# プロジェクト共通の警告フラグ設定
+# オプション: ビルド時のclang-tidy自動実行
+option(ENABLE_CLANG_TIDY "Enable clang-tidy static analysis during build" OFF)
+if(ENABLE_CLANG_TIDY)
+    find_program(CLANG_TIDY_PROGRAM clang-tidy)
+    if(CLANG_TIDY_PROGRAM)
+        set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_PROGRAM}")
+        message(STATUS "clang-tidy enabled: ${CLANG_TIDY_PROGRAM}")
+    endif()
+endif()
+
+# プロジェクト共通の警告フラグ設定 (MISRA C++:2023 準拠強化)
 add_library(project_warnings INTERFACE)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(project_warnings INTERFACE
@@ -36,7 +46,21 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         -Wpedantic
         -Wshadow
         -Wnon-virtual-dtor
+        -Wold-style-cast
+        -Wconversion
+        -Wsign-conversion
+        -Wfloat-conversion
+        -Wuninitialized
+        -Wnull-dereference
+        -Wimplicit-fallthrough
     )
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        target_compile_options(project_warnings INTERFACE
+            -Wduplicated-cond
+            -Wduplicated-branches
+            -Wlogical-op
+        )
+    endif()
 endif()
 
 #

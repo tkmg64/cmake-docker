@@ -88,8 +88,11 @@ docker compose exec cpp-dev bash
 # ユニットテスト (CTest / GoogleTest) の実行
 ./test.sh unit   # または引数なし: ./test.sh
 
-# 静的解析 (cppcheck) の実行
+# 静的解析 (cppcheck + clang-tidy: MISRA C++:2023 準拠チェック)
 ./test.sh static
+
+# clang-tidy (MISRA / AUTOSAR / CERT 準拠ルール) の単独実行
+./test.sh tidy
 
 # メモリリーク解析 (Valgrind) の実行
 ./test.sh memory
@@ -103,11 +106,31 @@ docker compose exec cpp-dev bash
 
 各テストの実行ログは `workspace/test_logs/` に自動保存され、ホスト側からも直接閲覧できます。
 - `test_logs/unit_test.log`: ユニットテスト結果
-- `test_logs/static_check.log`: 静的解析結果 (cppcheck)
+- `test_logs/static_check.log`: cppcheck 静的解析結果
+- `test_logs/clang_tidy.log`: clang-tidy 静的解析結果 (MISRA C++:2023 / AUTOSAR / CERT)
 - `test_logs/memory_check.log`: メモリ解析結果 (Valgrind)
 - `test_logs/coverage.log`: カバレッジ計測ログ
 
 カバレッジ計測を実行すると、`coverage_report/index.html` にレポートが生成されます。ホストマシンのブラウザで開いて確認してください。
+
+---
+
+## MISRA C++:2023 準拠機能について
+
+本テンプレートは、安全・高信頼性システム向けの最新ガイドライン **MISRA C++:2023**（C++17対象）にオープンソース環境で可能な限り準拠できるよう、以下の仕組みを組み込んでいます。
+
+1. **厳格なコンパイラ警告 (`CMakeLists.txt`)**:
+   - 暗黙の型変換・符号縮小の禁止 (`-Wconversion`, `-Wsign-conversion`, `-Wfloat-conversion`)
+   - Cスタイルキャストの禁止 (`-Wold-style-cast`)
+   - 変数のシャドウイング防止 (`-Wshadow`)
+   - 未初期化変数、null逆参照、switch文フォールスルーの検出
+2. **Clang-Tidy による静的解析 (`.clang-tidy`)**:
+   - MISRA C++:2023 の基盤である **AUTOSAR C++14**, **CERT C++**, **HICPP (High Integrity C++)**, **C++ Core Guidelines** のルールセットを適用。
+3. **コーディング規約の適合例**:
+   - 基本型の曖昧なサイズ依存を避ける `<cstdint>` 固定幅整数型 (`std::int32_t` など) の使用
+   - 例外を投げない関数の `noexcept` 明示
+   - 関数の戻り値チェックを促す `[[nodiscard]]` 属性
+   - 安全・軽量な参照渡し (`std::string_view`, const 参照)
 
 ### クリーンアップ
 

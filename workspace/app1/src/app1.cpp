@@ -1,3 +1,5 @@
 #include "app1.h"
 
-int add(int a, int b) { return a + b; }
+std::int32_t add(std::int32_t lhs, std::int32_t rhs) noexcept {
+    return lhs + rhs;
+}
