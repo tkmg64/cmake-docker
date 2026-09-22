@@ -40,6 +40,16 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Coverage"
       }
+    },
+    {
+      "name": "asan",
+      "displayName": "Address & UB Sanitizer",
+      "inherits": "default",
+      "binaryDir": "${sourceDir}/build_asan",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "ENABLE_SANITIZER": "ON"
+      }
     }
   ],
   "buildPresets": [
@@ -58,6 +68,10 @@
     {
       "name": "coverage",
       "configurePreset": "coverage"
+    },
+    {
+      "name": "asan",
+      "configurePreset": "asan"
     }
   ],
   "testPresets": [
@@ -74,6 +88,13 @@
     {
       "name": "coverage",
       "configurePreset": "coverage",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "asan",
+      "configurePreset": "asan",
       "output": {
         "outputOnFailure": true
       }

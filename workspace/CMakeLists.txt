@@ -27,6 +27,16 @@ if(CMAKE_BUILD_TYPE STREQUAL "Coverage")
     endif()
 endif()
 
+# サニタイザ (AddressSanitizer / UndefinedBehaviorSanitizer) のビルド設定
+option(ENABLE_SANITIZER "Enable AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
+if(ENABLE_SANITIZER)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        message(STATUS "Sanitizers enabled (AddressSanitizer, UndefinedBehaviorSanitizer)")
+        add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer -g)
+        add_link_options(-fsanitize=address,undefined)
+    endif()
+endif()
+
 # オプション: ビルド時のclang-tidy自動実行
 option(ENABLE_CLANG_TIDY "Enable clang-tidy static analysis during build" OFF)
 if(ENABLE_CLANG_TIDY)

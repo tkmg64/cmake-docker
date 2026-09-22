@@ -1,6 +1,7 @@
 # CMake/ビルド関連のディレクトリ
 build/
 build_coverage/
+build_asan/
 
 # カバレッジレポート、テストログ、Doxygenドキュメントの出力ディレクトリ
 coverage_report/

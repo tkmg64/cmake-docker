@@ -3,15 +3,16 @@
 # test.sh - テスト、静的解析、メモリ解析、カバレッジ計測を実行する統合スクリプト
 #
 # 使い方:
-# ./test.sh [unit|static|tidy|memory|coverage|doc|all]
+# ./test.sh [unit|static|tidy|memory|asan|coverage|doc|all]
 #
 # 引数なし or unit: ユニットテスト (ctest) を実行
 # static:         静的解析 (cppcheck + clang-tidy) を実行
 # tidy:           静的解析 (clang-tidy / MISRA C++:2023 参考ルール) を実行
 # memory:         メモリ解析 (valgrind) を実行
+# asan:           サニタイザ (AddressSanitizer / UndefinedBehaviorSanitizer) を実行
 # coverage:       カバレッジ計測を実行
 # doc:            Doxygen API ドキュメントを生成
-# all:            unit, static, memory, coverage の全てのチェックを実行
+# all:            unit, static, memory, asan, coverage の全てのチェックを実行
 #
 
 set -euo pipefail
@@ -99,6 +100,27 @@ run_memory_check() {
   echo "--> メモリ解析のログを保存しました: $log_file"
 }
 
+# サニタイザ (AddressSanitizer / UndefinedBehaviorSanitizer) の実行
+run_sanitizer() {
+  echo ""
+  echo "--------------------------------------------------------"
+  echo "--- サニタイザ (ASan / UBSan) テストを実行しています ---"
+  echo "--------------------------------------------------------"
+  local log_file="$LOG_DIR/sanitizer.log"
+  {
+    echo "--- ASan/UBSan 用ビルドを実行中 ---"
+    cmake --preset asan
+    cmake --build --preset asan --parallel
+
+    echo ""
+    echo "--- サニタイザ有効下でテストを実行中 ---"
+    export ASAN_OPTIONS="symbolize=1:detect_leaks=1:abort_on_error=1"
+    export UBSAN_OPTIONS="print_stacktrace=1:abort_on_error=1"
+    ctest --preset asan --output-on-failure
+  } 2>&1 | tee "$log_file"
+  echo "--> サニタイザテストのログを保存しました: $log_file"
+}
+
 # カバレッジ計測の実行
 run_coverage() {
   echo ""
@@ -178,6 +200,9 @@ for arg in "$@"; do
     memory)
       run_memory_check
       ;;
+    asan)
+      run_sanitizer
+      ;;
     coverage)
       run_coverage
       ;;
@@ -188,11 +213,12 @@ for arg in "$@"; do
       run_unit_test
       run_static_check
       run_memory_check
+      run_sanitizer
       run_coverage
       ;;
     *)
       echo "エラー: 不明な引数 '$arg'" >&2
-      echo "使い方: $0 [unit|static|tidy|memory|coverage|doc|all]" >&2
+      echo "使い方: $0 [unit|static|tidy|memory|asan|coverage|doc|all]" >&2
       exit 1
       ;;
   esac

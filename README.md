@@ -98,10 +98,13 @@ docker compose exec cpp-dev bash
 # メモリリーク解析 (Valgrind) の実行
 ./test.sh memory
 
+# サニタイザ (AddressSanitizer / UndefinedBehaviorSanitizer) の実行
+./test.sh asan
+
 # コードカバレッジ計測と HTML レポート生成 (lcov / genhtml)
 ./test.sh coverage
 
-# 上記すべてのチェックを一括実行
+# 上記すべてのチェックを一括実行 (unit, static, memory, asan, coverage)
 ./test.sh all
 ```
 
@@ -110,6 +113,7 @@ docker compose exec cpp-dev bash
 - `test_logs/static_check.log`: cppcheck 静的解析結果
 - `test_logs/clang_tidy.log`: clang-tidy 静的解析結果
 - `test_logs/memory_check.log`: メモリ解析結果 (Valgrind)
+- `test_logs/sanitizer.log`: サニタイザ解析結果 (ASan / UBSan)
 - `test_logs/coverage.log`: カバレッジ計測ログ
 
 カバレッジ計測を実行すると、`coverage_report/index.html` にレポートが生成されます。ホストマシンのブラウザで開いて確認してください。
@@ -167,10 +171,27 @@ docker compose down
 
 ---
 
+## CI/CD パイプライン (GitHub Actions)
+
+本リポジトリには、プッシュおよびプルリクエスト時に自動実行される GitHub Actions ワークフロー (`.github/workflows/ci.yml`) が設定されています。
+
+- **実行内容**:
+  1. Docker 開発環境イメージのビルド (`docker compose build`)
+  2. 全品質チェックの実行 (`./test.sh all`: ユニットテスト、静的解析、Valgrind、ASan/UBSan、カバレッジ)
+  3. Doxygen ソフトウェア詳細設計書の自動生成 (`./doc.sh`)
+  4. テストログ、カバレッジレポート、および Doxygen ドキュメントのアーティファクト保存 (GitHub 画面からダウンロード可能)
+
+ローカル環境と同一のコンテナ定義で CI が動作するため、「ローカルでは動いたが CI で失敗する」環境依存トラブルを防止します。
+
+---
+
 ## ディレクトリ構成
 
 ```
 .
+├── .github/             # GitHub 連携設定
+│   └── workflows/
+│       └── ci.yml      # GitHub Actions CI/CD パイプライン定義
 ├── .clang-format       # コードフォーマット設定 (Google / LLVM ベース)
 ├── .clang-tidy         # 静的解析設定 (MISRA C++:2023 / AUTOSAR / CERT 参考)
 ├── .devcontainer/      # VS Code Dev Containers 設定

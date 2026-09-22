@@ -17,6 +17,7 @@ echo "--- クリーンアップを開始します ---"
 TARGET_DIRS=(
   "build"
   "build_coverage"
+  "build_asan"
   "coverage_report"
   "test_logs"
   "docs"

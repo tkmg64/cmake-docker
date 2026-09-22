@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Build, Test, Analyze & Document
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker dev image
+        run: |
+          docker compose build
+
+      - name: Run all quality checks (Unit, Static, Memory, Sanitizers, Coverage)
+        run: |
+          docker compose run --rm cpp-dev ./test.sh all
+
+      - name: Generate Doxygen SDD documentation
+        run: |
+          docker compose run --rm cpp-dev ./doc.sh
+
+      - name: Upload test logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs
+          path: workspace/test_logs/
+          if-no-files-found: ignore
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: workspace/coverage_report/
+          if-no-files-found: ignore
+
+      - name: Upload Doxygen HTML documentation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: doxygen-documentation
+          path: workspace/docs/html/
+          if-no-files-found: ignore
