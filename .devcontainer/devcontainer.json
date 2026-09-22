@@ -11,10 +11,13 @@
         "ms-vscode.cpptools-extension-pack",
         "ms-vscode.cmake-tools",
         "twxs.cmake",
-        "xaver.clang-format"
+        "xaver.clang-format",
+        "matepek.vscode-catch2-test-adapter"
       ],
       "settings": {
         "cmake.sourceDirectory": "${workspaceFolder}",
+        "cmake.ctest.testExplorerIntegrationEnabled": true,
+        "testMate.cpp.test.executables": "{build,build_*}/**/{test*,*test*}",
         "editor.formatOnSave": true,
         "[cpp]": {
           "editor.defaultFormatter": "xaver.clang-format"

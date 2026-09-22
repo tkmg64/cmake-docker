@@ -1,6 +1,8 @@
 {
   "cmake.sourceDirectory": "${workspaceFolder}/workspace",
   "cmake.generator": "Ninja",
+  "cmake.ctest.testExplorerIntegrationEnabled": true,
+  "testMate.cpp.test.executables": "workspace/{build,build_*}/**/{test*,*test*}",
   "editor.formatOnSave": true,
   "[cpp]": {
     "editor.defaultFormatter": "xaver.clang-format"
