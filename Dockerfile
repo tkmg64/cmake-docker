@@ -10,29 +10,40 @@ ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 
 # 必要なパッケージのインストール
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     cmake \
+    ninja-build \
+    ccache \
+    clang-format \
+    clang-tidy \
     git \
     lcov \
-    libgtest-dev \
     g++ \
     gdb \
     locales \
     valgrind \
     cppcheck \
     libboost-all-dev \
+    sudo \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/* \
     && locale-gen en_US.UTF-8
 
-# GoogleTestのビルドとインストール
-RUN cd /usr/src/gtest && \
-    cmake CMakeLists.txt && \
-    make && \
-    cp lib/*.a /usr/lib
+# ubuntuユーザー (UID: 1000) にパスワードなしsudo権限を付与
+RUN echo "ubuntu ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/ubuntu \
+    && chmod 0440 /etc/sudoers.d/ubuntu
 
-# 作業ディレクトリの設定
+# ccache用ディレクトリの作成と権限設定
+RUN mkdir -p /var/cache/ccache && chown -R ubuntu:ubuntu /var/cache/ccache
+ENV CCACHE_DIR=/var/cache/ccache
+
+# 作業ディレクトリの作成と権限設定
+RUN mkdir -p /workspace && chown ubuntu:ubuntu /workspace
 WORKDIR /workspace
 
+# デフォルトユーザーを非rootのubuntuに設定
+USER ubuntu
+
 # デフォルトのコマンド
-CMD ["/bin/bash"] 
+CMD ["/bin/bash"]

@@ -15,6 +15,10 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
+# ログディレクトリの定義と作成
+LOG_DIR="test_logs"
+mkdir -p "$LOG_DIR"
+
 # --- 関数定義 ---
 
 # ビルドディレクトリの存在を確認し、なければビルドを実行
@@ -32,9 +36,9 @@ run_unit_test() {
   echo "--- ユニットテストを実行しています ---"
   echo "----------------------------------------"
   ensure_build
-  cd build
-  ctest --verbose
-  cd ..
+  local log_file="$LOG_DIR/unit_test.log"
+  ctest --test-dir build --output-on-failure 2>&1 | tee "$log_file"
+  echo "--> ユニットテストのログを保存しました: $log_file"
 }
 
 # 静的解析の実行
@@ -43,7 +47,9 @@ run_static_check() {
   echo "----------------------------------------"
   echo "--- 静的解析 (cppcheck) を実行しています ---"
   echo "----------------------------------------"
-  cppcheck --enable=all --suppress=missingIncludeSystem app1/src app2/src
+  local log_file="$LOG_DIR/static_check.log"
+  cppcheck --enable=all --suppress=missingIncludeSystem app1/src app2/src 2>&1 | tee "$log_file"
+  echo "--> 静的解析のログを保存しました: $log_file"
 }
 
 # メモリ解析の実行
@@ -53,78 +59,82 @@ run_memory_check() {
   echo "--- メモリ解析 (valgrind) を実行しています ---"
   echo "----------------------------------------"
   ensure_build
-  cd build
-  echo "--- Valgrind: app1_test ---"
-  valgrind --leak-check=full --show-leak-kinds=all ./app1/app1_test
-  echo ""
-  echo "--- Valgrind: app2_test ---"
-  valgrind --leak-check=full --show-leak-kinds=all ./app2/app2_test
-  cd ..
+  local log_file="$LOG_DIR/memory_check.log"
+  {
+    echo "=== Valgrind: app1_test ==="
+    valgrind --leak-check=full --show-leak-kinds=all ./build/app1/app1_test
+    echo ""
+    echo "=== Valgrind: app2_test ==="
+    valgrind --leak-check=full --show-leak-kinds=all ./build/app2/app2_test
+  } 2>&1 | tee "$log_file"
+  echo "--> メモリ解析のログを保存しました: $log_file"
 }
 
 # カバレッジ計測の実行
 run_coverage() {
+  echo ""
+  echo "----------------------------------------"
+  echo "--- カバレッジ計測を実行しています ---"
+  echo "----------------------------------------"
+  
+  BUILD_DIR="build_coverage"
+  OUTPUT_DIR="coverage_report"
+  local log_file="$LOG_DIR/coverage.log"
+
+  if [ -d "$BUILD_DIR" ]; then
+    rm -rf "$BUILD_DIR"
+  fi
+
+  {
+    echo "--- カバレッジモードでCMakeを実行・並列ビルドしています ---"
+    cmake -B "$BUILD_DIR" -S . -G Ninja -DCMAKE_BUILD_TYPE=Coverage
+    cmake --build "$BUILD_DIR" --parallel
+
     echo ""
-    echo "----------------------------------------"
-    echo "--- カバレッジ計測を実行しています ---"
-    echo "----------------------------------------"
-    
-    BUILD_DIR="build_coverage"
-    OUTPUT_DIR="coverage_report"
-
-    if [ -d "$BUILD_DIR" ]; then
-      echo "古いカバレッジビルドディレクトリ '$BUILD_DIR' を削除します..."
-      rm -rf "$BUILD_DIR"
-    fi
-    mkdir "$BUILD_DIR"
-    cd "$BUILD_DIR"
-
-    echo "--- カバレッジモードでCMakeを実行しています ---"
-    cmake -DCMAKE_BUILD_TYPE=Coverage ..
-    echo "--- プロジェクトをビルドしています ---"
-    make
-
     echo "--- カバレッジカウンタをリセットしています ---"
-    lcov --zerocounters --directory .
+    lcov --zerocounters --directory "$BUILD_DIR"
+
+    echo ""
     echo "--- テストを実行してカバレッジデータを生成しています ---"
-    ./app1/app1_test
-    ./app2/app2_test
+    ctest --test-dir "$BUILD_DIR" --output-on-failure
 
+    echo ""
     echo "--- lcovでカバレッジデータを収集しています ---"
-    lcov --capture --directory . --output-file coverage.info
+    lcov --capture --directory "$BUILD_DIR" --output-file "$BUILD_DIR/coverage.info" --ignore-errors mismatch,unused
 
-    cd .. # プロジェクトルートに戻る
+    echo ""
     echo "--- テストコードと外部ライブラリをカバレッジから除外しています ---"
-    lcov --ignore-errors unused --remove "$BUILD_DIR/coverage.info" \
+    lcov --remove "$BUILD_DIR/coverage.info" \
          '/usr/*' \
          '*/_deps/*' \
          '*/test/*' \
          '*/src/main*.cpp' \
-         --output-file "$BUILD_DIR/coverage.final.info"
+         --output-file "$BUILD_DIR/coverage.final.info" \
+         --ignore-errors unused,unused
 
     if [ -d "$OUTPUT_DIR" ]; then
       rm -rf "$OUTPUT_DIR"
     fi
-    echo "--- genhtmlでHTMLレポートを生成しています ---"
-    genhtml "$BUILD_DIR/coverage.final.info" --output-directory "$OUTPUT_DIR"
-
     echo ""
-    echo "カバレッジレポートの生成が完了しました。"
-    echo "ブラウザで '$OUTPUT_DIR/index.html' を開いて確認してください。"
-}
+    echo "--- genhtmlでHTMLレポートを生成しています ---"
+    genhtml "$BUILD_DIR/coverage.final.info" --output-directory "$OUTPUT_DIR" --ignore-errors unmapped
+  } 2>&1 | tee "$log_file"
 
+  echo ""
+  echo "カバレッジレポートの生成が完了しました。"
+  echo "ブラウザで '$OUTPUT_DIR/index.html' を開いて確認してください。"
+  echo "--> カバレッジログを保存しました: $log_file"
+}
 
 # --- メイン処理 ---
 
-# 引数が指定されていない場合は、ユニットテストを実行
 if [ $# -eq 0 ]; then
   run_unit_test
   echo ""
-  echo "ユニットテストが完了しました。"
+  echo "ユニットテストが完了しました。 (ログディレクトリ: $LOG_DIR/)"
   exit 0
 fi
 
-# 指定された引数に基づいてチェックを実行
 for arg in "$@"; do
   case "$arg" in
     unit)
@@ -154,4 +164,4 @@ for arg in "$@"; do
 done
 
 echo ""
-echo "指定されたチェックが完了しました。"
+echo "指定されたチェックが完了しました。 (ログディレクトリ: $LOG_DIR/)"

@@ -2,8 +2,9 @@
 build/
 build_coverage/
 
-# カバレッジレポートの出力ディレクトリ
+# カバレッジレポートおよびテストログの出力ディレクトリ
 coverage_report/
+test_logs/
 
 # IDE/エディタ固有の設定ファイル
 .vscode/

@@ -1,40 +1,26 @@
 #!/bin/bash
 #
-# build.sh - プロジェクトのビルド用スクリプト
+# build.sh - プロジェクトのビルド用スクリプト (Ninja + CMake)
 #
 # 使い方:
-# 1. このファイルをプロジェクトのルートディレクトリに `build.sh` として保存します。
-# 2. 実行権限を付与します: chmod +x build.sh
-# 3. スクリプトを実行します: ./build.sh
+# ./build.sh [Debug|Release]
+# 引数なしの場合は Debug でビルドします。
 #
 
-# -e: コマンドが失敗した時点でスクリプトを終了する
-# -u: 未定義の変数が使用された場合にエラーとする
-# -o pipefail: パイプラインの途中でコマンドが失敗した場合に、その時点で失敗とする
 set -euo pipefail
 
-# スクリプトのあるディレクトリを基準にする
 cd "$(dirname "$0")"
 
-# ビルドディレクトリを定義
+BUILD_TYPE="${1:-Debug}"
 BUILD_DIR="build"
 
-# ビルドディレクトリが存在しない場合は作成
-if [ ! -d "$BUILD_DIR" ]; then
-  echo "ビルドディレクトリ '$BUILD_DIR' を作成します..."
-  mkdir "$BUILD_DIR"
-fi
-
-# ビルドディレクトリに移動
-cd "$BUILD_DIR"
-
-echo "--- CMakeを実行しています ---"
-cmake ..
+echo "--- CMakeを設定しています (BuildType: ${BUILD_TYPE}, Generator: Ninja) ---"
+cmake -B "$BUILD_DIR" -S . -G Ninja -DCMAKE_BUILD_TYPE="${BUILD_TYPE}"
 
 echo ""
-echo "--- プロジェクトをビルドしています ---"
-make
+echo "--- プロジェクトを並列ビルドしています ---"
+cmake --build "$BUILD_DIR" --parallel
 
 echo ""
 echo "ビルドが完了しました。"
-echo "実行可能ファイルは './build/app1/app1' と './build/app2/app2' にあります。"
+echo "実行可能ファイルは './${BUILD_DIR}/app1/app1' と './${BUILD_DIR}/app2/app2' にあります。"

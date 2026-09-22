@@ -1,13 +1,13 @@
 #include <gtest/gtest.h>
 
-#include "../src/app2.h"  // テスト対象のヘッダー
+#include "app2.h"
 
 // concatenate関数のテストケース
 TEST(ConcatenateTest, Basic) {
-  EXPECT_EQ("Hello World", concatenate("Hello", "World"));
+    EXPECT_EQ("Hello World", concatenate("Hello", "World"));
 }
 
 TEST(ConcatenateTest, EmptyStrings) {
-  EXPECT_EQ(" ", concatenate("", ""));
-  EXPECT_EQ("Hello ", concatenate("Hello", ""));
+    EXPECT_EQ(" ", concatenate("", ""));
+    EXPECT_EQ("Hello ", concatenate("Hello", ""));
 }

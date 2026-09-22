@@ -1,0 +1,28 @@
+{
+  "name": "C++ Development (CMake + Docker)",
+  "dockerComposeFile": "../compose.yml",
+  "service": "cpp-dev",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "ubuntu",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cpptools-extension-pack",
+        "ms-vscode.cmake-tools",
+        "twxs.cmake",
+        "xaver.clang-format"
+      ],
+      "settings": {
+        "cmake.sourceDirectory": "${workspaceFolder}",
+        "editor.formatOnSave": true,
+        "[cpp]": {
+          "editor.defaultFormatter": "xaver.clang-format"
+        },
+        "[c]": {
+          "editor.defaultFormatter": "xaver.clang-format"
+        }
+      }
+    }
+  }
+}

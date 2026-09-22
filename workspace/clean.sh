@@ -18,6 +18,7 @@ TARGET_DIRS=(
   "build"
   "build_coverage"
   "coverage_report"
+  "test_logs"
 )
 
 for dir in "${TARGET_DIRS[@]}"; do
