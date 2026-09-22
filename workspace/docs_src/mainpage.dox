@@ -11,6 +11,7 @@
  * | :--- | :--- | :--- | :--- |
  * | **1.0.0** | 2026-09-22 | 開発チーム | 初版作成。C++17 / MISRA C++:2023 参考設計の定義 |
  * | **1.1.0** | 2026-09-23 | 開発チーム | ASan/UBSan サニタイザ検証基盤および GitHub Actions CI の導入 |
+ * | **1.2.0** | 2026-09-23 | 開発チーム | format.sh 自動整形、VS Code デバッグ設定、Google Mock (gmock) サンプルの追加 |
  * 
  * ---
  * 
@@ -25,6 +26,7 @@
  *   - 例外を送出しない関数には `noexcept` を明記。
  *   - 戻り値の確認漏れを防止するため `[[nodiscard]]` 属性を付与。
  *   - 不要な一時オブジェクト生成やコピーを避けるため、`std::string_view` や const 参照を活用。
+ *   - 依存性逆転原則 (DIP) に基づく抽象インターフェースと Google Mock (gmock) による単体テスト。
  * - **静的・動的解析**: Clang-Tidy / Cppcheck による静的コード解析、Valgrind によるメモリリーク追跡、および ASan/UBSan サニタイザによる実行時未定義動作検証。
  * 
  * @note 本環境はオープンソースツール（Clang-Tidy / GCC 警告）を活用して MISRA C++:2023 の考え方をベースに取り入れたものであり、商用・公式の MISRA 認証ツールによる適合証明を行うものではありません。
@@ -37,10 +39,10 @@
  * 
  * ```
  * MultiAppProject
- *  ├── app1 (算術演算モジュール)
- *  │    ├── app1_lib: 算術演算ロジックライブラリ (app1.h / app1.cpp)
+ *  ├── app1 (算術演算 & デバイス制御モジュール)
+ *  │    ├── app1_lib: 算術演算・通信ロジックライブラリ (app1.h / device.h)
  *  │    ├── app1: スタンドアロン実行バイナリ (main1.cpp)
- *  │    └── app1_test: ユニットテスト (test1.cpp)
+ *  │    └── app1_test: ユニットテスト & モックテスト (test1.cpp / test_mock.cpp)
  *  └── app2 (文字列処理モジュール)
  *       ├── app2_lib: 文字列処理ロジックライブラリ (app2.h / app2.cpp)
  *       ├── app2: スタンドアロン実行バイナリ (main2.cpp)
@@ -50,8 +52,8 @@
  * ### モジュール一覧
  * 
  * 1. **[app1 モジュール](app1_8h.html)**:
- *    - 責務: 32ビット整数の安全な算術演算ロジックを提供。
- *    - 主要インターフェース: @ref add(std::int32_t, std::int32_t)
+ *    - 責務: 32ビット整数の安全な算術演算ロジック、およびデバイス通信インターフェースを提供。
+ *    - 主要インターフェース: @ref add(std::int32_t, std::int32_t), @ref IDevice, @ref DeviceController
  * 2. **[app2 モジュール](app2_8h.html)**:
  *    - 責務: `std::string_view` を用いた効率的かつ安全な文字列操作・結合ロジックを提供。
  *    - 主要インターフェース: @ref concatenate(std::string_view, std::string_view)

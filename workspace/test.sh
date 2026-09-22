@@ -3,7 +3,7 @@
 # test.sh - テスト、静的解析、メモリ解析、カバレッジ計測を実行する統合スクリプト
 #
 # 使い方:
-# ./test.sh [unit|static|tidy|memory|asan|coverage|doc|all]
+# ./test.sh [unit|static|tidy|memory|asan|coverage|doc|format|format-check|all]
 #
 # 引数なし or unit: ユニットテスト (ctest) を実行
 # static:         静的解析 (cppcheck + clang-tidy) を実行
@@ -12,7 +12,9 @@
 # asan:           サニタイザ (AddressSanitizer / UndefinedBehaviorSanitizer) を実行
 # coverage:       カバレッジ計測を実行
 # doc:            Doxygen API ドキュメントを生成
-# all:            unit, static, memory, asan, coverage の全てのチェックを実行
+# format:         コードフォーマットを一括適用
+# format-check:   コードフォーマット崩れの有無を検証
+# all:            format-check, unit, static, memory, asan, coverage の全てのチェックを実行
 #
 
 set -euo pipefail
@@ -209,7 +211,14 @@ for arg in "$@"; do
     doc)
       ./doc.sh
       ;;
+    format)
+      ./format.sh apply
+      ;;
+    format-check)
+      ./format.sh check
+      ;;
     all)
+      ./format.sh check
       run_unit_test
       run_static_check
       run_memory_check
@@ -218,7 +227,7 @@ for arg in "$@"; do
       ;;
     *)
       echo "エラー: 不明な引数 '$arg'" >&2
-      echo "使い方: $0 [unit|static|tidy|memory|asan|coverage|doc|all]" >&2
+      echo "使い方: $0 [unit|static|tidy|memory|asan|coverage|doc|format|format-check|all]" >&2
       exit 1
       ;;
   esac

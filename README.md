@@ -126,12 +126,16 @@ docker compose exec cpp-dev bash
 # コードカバレッジ計測と HTML レポート生成 (lcov / genhtml)
 ./test.sh coverage
 
-# 上記すべてのチェックを一括実行 (unit, static, memory, asan, coverage)
+# コードフォーマットの適用 / 検証
+./test.sh format        # または ./format.sh (一括整形)
+./test.sh format-check  # または ./format.sh check (差分検証)
+
+# 上記すべてのチェックを一括実行 (format-check, unit, static, memory, asan, coverage)
 ./test.sh all
 ```
 
 各テストの実行ログは `workspace/test_logs/` に自動保存され、ホスト側からも直接閲覧できます。
-- `test_logs/unit_test.log`: ユニットテスト結果
+- `test_logs/unit_test.log`: ユニットテスト結果 (GoogleTest + GoogleMock)
 - `test_logs/static_check.log`: cppcheck 静的解析結果
 - `test_logs/clang_tidy.log`: clang-tidy 静的解析結果
 - `test_logs/memory_check.log`: メモリ解析結果 (Valgrind)
@@ -139,6 +143,30 @@ docker compose exec cpp-dev bash
 - `test_logs/coverage.log`: カバレッジ計測ログ
 
 カバレッジ計測を実行すると、`coverage_report/index.html` にレポートが生成されます。ホストマシンのブラウザで開いて確認してください。
+
+---
+
+### VS Code でのワンクリックデバッグ (F5)
+
+VS Code の「実行とデバッグ」パネル（`Ctrl+Shift+D`）または **`F5` キー** を押すだけで、自動で最新ビルドが行われ、ブレークポイントを打った行で一時停止してステップ実行・変数確認が可能です。
+
+- **デバッグ構成一覧**:
+  - `app1 (Debug)`: 算術演算アプリケーションのデバッグ
+  - `app2 (Debug)`: 文字列処理アプリケーションのデバッグ
+  - `app1_test (Debug)`: app1 単体テスト & モックテストのデバッグ
+  - `app2_test (Debug)`: app2 単体テストのデバッグ
+- **タスクメニュー (`Ctrl+Shift+B`)**:
+  - `Build (Debug)` / `Build (Release)` / `Format Code` / `Run All Tests & Checks` が即座に呼び出せます。
+
+---
+
+### Google Mock (gmock) によるモックテスト
+
+本テンプレートには、依存関係を抽象化してテストする **Google Mock** のサンプル（`app1/src/device.h` および `app1/test/test_mock.cpp`）が含まれています。
+
+- **インターフェース (`IDevice`)**: 通信やハードウェアアクセスを純粋仮想関数として定義。
+- **モッククラス (`MockDevice`)**: `MOCK_METHOD` マクロを用いて仮想関数をオーバーライド。
+- **呼び出し検証**: `EXPECT_CALL(mock, write(...)).Times(1).WillOnce(testing::Return(true))` のように、呼び出し回数・引数・戻り値をシミュレーション検証できます。
 
 ---
 
@@ -219,7 +247,9 @@ docker compose down
 ├── .devcontainer/      # VS Code Dev Containers 設定
 │   └── devcontainer.json
 ├── .vscode/            # VS Code ローカル設定
-│   └── settings.json
+│   ├── settings.json
+│   ├── launch.json     # デバッグ起動設定 (F5 / GDB)
+│   └── tasks.json      # ビルド・テストタスク定義
 ├── .env.example        # 社内プロキシ設定サンプル (必要時のみ .env にコピー)
 ├── Dockerfile          # 開発用コンテナイメージ定義
 ├── compose.yml         # Docker Compose 設定 (V2仕様)
@@ -231,15 +261,21 @@ docker compose down
 │   │   └── mainpage.dox # 詳細設計書メインページ定義
 │   ├── build.sh        # Ninja 並列ビルドスクリプト
 │   ├── test.sh         # テスト・解析統合スクリプト
+│   ├── format.sh       # コードフォーマット一括適用・検証スクリプト
 │   ├── doc.sh          # Doxygen ドキュメント生成スクリプト
 │   ├── clean.sh        # クリーンアップスクリプト
-│   ├── app1/           # サンプルアプリケーション 1
+│   ├── app1/           # サンプルアプリケーション 1 (算術演算 & モックテスト)
+│   │   ├── CMakeLists.txt
+│   │   ├── src/
+│   │   │   ├── app1.cpp / app1.h
+│   │   │   ├── device.h  # 抽象通信インターフェース
+│   │   │   └── main1.cpp
+│   │   └── test/
+│   │       ├── test1.cpp # GoogleTest 単体テスト
+│   │       └── test_mock.cpp # GoogleMock モックテスト
+│   └── app2/           # サンプルアプリケーション 2 (文字列処理)
 │   │   ├── CMakeLists.txt
 │   │   ├── src/
 │   │   └── test/
-│   └── app2/           # サンプルアプリケーション 2
-│       ├── CMakeLists.txt
-│       ├── src/
-│       └── test/
 └── README.md           # 本ドキュメント
 ```

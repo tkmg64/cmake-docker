@@ -27,6 +27,10 @@ jobs:
           sudo chmod -R a+rwX workspace
           sudo chown -R 1000:1000 workspace
 
+      - name: Check code formatting (clang-format)
+        run: |
+          docker compose run --rm cpp-dev ./format.sh check
+
       - name: Run all quality checks (Unit, Static, Memory, Sanitizers, Coverage)
         run: |
           docker compose run --rm cpp-dev ./test.sh all

@@ -1,5 +1,5 @@
 # アプリケーションのロジック部分をライブラリとして定義
-add_library(app1_lib src/app1.cpp src/app1.h)
+add_library(app1_lib src/app1.cpp src/app1.h src/device.h)
 target_include_directories(app1_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_link_libraries(app1_lib PUBLIC project_warnings)
 
@@ -8,10 +8,10 @@ add_executable(app1 src/main1.cpp)
 target_link_libraries(app1 PRIVATE app1_lib project_warnings)
 
 #
-# テストの設定
+# テストの設定 (GoogleTest + GoogleMock)
 #
-add_executable(app1_test test/test1.cpp)
-target_link_libraries(app1_test PRIVATE app1_lib GTest::gtest_main project_warnings)
+add_executable(app1_test test/test1.cpp test/test_mock.cpp)
+target_link_libraries(app1_test PRIVATE app1_lib GTest::gtest_main GTest::gmock project_warnings)
 
 # GoogleTestの自動検出
 include(GoogleTest)
