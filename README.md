@@ -20,6 +20,35 @@
 
 ---
 
+## 新規プロジェクトへの導入手順 (カスタマイズチェックリスト)
+
+本テンプレートを別の Git リポジトリにコピーして新しいプロジェクトを開始する際は、以下のファイルをプロジェクト名や構成に合わせて変更してください。
+
+### 1. プロジェクト名 & パッケージ情報の変更
+- [ ] **`workspace/CMakeLists.txt`**:
+  - `project(MultiAppProject CXX)` をご自身のプロジェクト名に変更（例: `project(MyAwesomeProject CXX)`）
+  - CPack 設定（`CPACK_PACKAGE_NAME`, `CPACK_PACKAGE_VENDOR`, `CPACK_PACKAGE_CONTACT` など）をご自身の情報に更新
+- [ ] **`workspace/Doxyfile`**:
+  - `PROJECT_NAME = "MultiAppProject"` をご自身のプロジェクト名に変更
+  - `PROJECT_BRIEF`（概要説明文）を更新
+- [ ] **`workspace/docs_src/mainpage.dox`**:
+  - タイトル（`@mainpage ...`）や、改訂履歴（作成者名・日付）、システムアーキテクチャの解説をご自身の仕様に合わせて更新
+
+### 2. アプリケーション・モジュール構成の変更
+- [ ] **サンプルモジュール (`workspace/app1`, `app2`) の置き換え**:
+  - サンプルの `app1/`, `app2/` をご自身のアプリケーション名・ライブラリ名にリネームまたは新規作成
+  - `workspace/CMakeLists.txt` 内の `add_subdirectory(app1)` を自身のディレクトリ名に修正
+  - 各サブディレクトリの `CMakeLists.txt` で、パッケージング対象とする実行ファイルに `install(TARGETS <バイナリ名> DESTINATION ${CMAKE_INSTALL_BINDIR})` を記述
+
+### 3. VS Code デバッグ設定の更新
+- [ ] **`.vscode/launch.json`**:
+  - `program` に指定されているバイナリパス（例: `${workspaceFolder}/workspace/build/app1/app1`）を、リネーム後のバイナリ名に変更
+
+### 4. 社内環境・プロキシ設定 (必要な場合のみ)
+- [ ] 社内ネットワーク等のプロキシ環境下でビルドする場合は、`.env.example` をコピーして `.env` を作成し、プロキシ情報を記述
+
+---
+
 ## 使い方
 
 ### 方法 A: VS Code Dev Containers を使う場合 (推奨)
@@ -184,7 +213,7 @@ CMake 標準の **CPack** を利用して、リリース用バイナリ（`app1`
 
 ```text
 dist/
-└── MultiAppProject-1.3.0-Linux.tar.gz
+└── MultiAppProject-1.0.0-Linux.tar.gz
 ```
 
 #### アーカイブの展開と実行方法
@@ -192,11 +221,11 @@ dist/
 
 ```bash
 # アーカイブを解凍
-tar -xzf MultiAppProject-1.3.0-Linux.tar.gz
+tar -xzf MultiAppProject-1.0.0-Linux.tar.gz
 
 # 実行
-./MultiAppProject-1.3.0-Linux/bin/app1
-./MultiAppProject-1.3.0-Linux/bin/app2
+./MultiAppProject-1.0.0-Linux/bin/app1
+./MultiAppProject-1.0.0-Linux/bin/app2
 ```
 
 > [!NOTE]
