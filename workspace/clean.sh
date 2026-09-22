@@ -16,11 +16,13 @@ echo "--- クリーンアップを開始します ---"
 # 削除対象のディレクトリを定義
 TARGET_DIRS=(
   "build"
+  "build_release"
   "build_coverage"
   "build_asan"
   "coverage_report"
   "test_logs"
   "docs"
+  "dist"
 )
 
 for dir in "${TARGET_DIRS[@]}"; do

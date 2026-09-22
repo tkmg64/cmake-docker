@@ -6,6 +6,7 @@ target_link_libraries(app1_lib PUBLIC project_warnings)
 # main関数を含むソースから実行可能ファイルを作成
 add_executable(app1 src/main1.cpp)
 target_link_libraries(app1 PRIVATE app1_lib project_warnings)
+install(TARGETS app1 DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 #
 # テストの設定 (GoogleTest + GoogleMock)

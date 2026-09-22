@@ -42,6 +42,15 @@
       },
       "group": "test",
       "problemMatcher": []
+    },
+    {
+      "label": "Package (.tar.gz)",
+      "type": "shell",
+      "command": "./package.sh",
+      "options": {
+        "cwd": "${workspaceFolder}/workspace"
+      },
+      "problemMatcher": []
     }
   ]
 }

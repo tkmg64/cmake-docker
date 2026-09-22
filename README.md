@@ -156,7 +156,7 @@ VS Code の「実行とデバッグ」パネル（`Ctrl+Shift+D`）または **`
   - `app1_test (Debug)`: app1 単体テスト & モックテストのデバッグ
   - `app2_test (Debug)`: app2 単体テストのデバッグ
 - **タスクメニュー (`Ctrl+Shift+B`)**:
-  - `Build (Debug)` / `Build (Release)` / `Format Code` / `Run All Tests & Checks` が即座に呼び出せます。
+  - `Build (Debug)` / `Build (Release)` / `Format Code` / `Run All Tests & Checks` / `Package (.tar.gz)` が即座に呼び出せます。
 
 ---
 
@@ -167,6 +167,40 @@ VS Code の「実行とデバッグ」パネル（`Ctrl+Shift+D`）または **`
 - **インターフェース (`IDevice`)**: 通信やハードウェアアクセスを純粋仮想関数として定義。
 - **モッククラス (`MockDevice`)**: `MOCK_METHOD` マクロを用いて仮想関数をオーバーライド。
 - **呼び出し検証**: `EXPECT_CALL(mock, write(...)).Times(1).WillOnce(testing::Return(true))` のように、呼び出し回数・引数・戻り値をシミュレーション検証できます。
+
+---
+
+### 配布用ポータブルアーカイブ (.tar.gz) の生成 (CPack)
+
+CMake 標準の **CPack** を利用して、リリース用バイナリ（`app1`, `app2`）をまとめたポータブルな配布用アーカイブ（`.tar.gz`）を自動生成できます。
+
+```bash
+# 配布用アーカイブを生成
+./package.sh
+# または test.sh 経由: ./test.sh package
+```
+
+生成されたアーカイブは `workspace/dist/` に出力されます。
+
+```text
+dist/
+└── MultiAppProject-1.3.0-Linux.tar.gz
+```
+
+#### アーカイブの展開と実行方法
+管理者権限（root）は不要です。任意のディレクトリで解凍するだけで即座に実行できます。
+
+```bash
+# アーカイブを解凍
+tar -xzf MultiAppProject-1.3.0-Linux.tar.gz
+
+# 実行
+./MultiAppProject-1.3.0-Linux/bin/app1
+./MultiAppProject-1.3.0-Linux/bin/app2
+```
+
+> [!NOTE]
+> GitHub Actions CI でも自動的に `.tar.gz` パッケージがビルドされ、CI 実行結果の「Artifacts」からダウンロード可能です。
 
 ---
 
@@ -263,6 +297,7 @@ docker compose down
 │   ├── test.sh         # テスト・解析統合スクリプト
 │   ├── format.sh       # コードフォーマット一括適用・検証スクリプト
 │   ├── doc.sh          # Doxygen ドキュメント生成スクリプト
+│   ├── package.sh      # 配布用アーカイブ (.tar.gz) 生成スクリプト
 │   ├── clean.sh        # クリーンアップスクリプト
 │   ├── app1/           # サンプルアプリケーション 1 (算術演算 & モックテスト)
 │   │   ├── CMakeLists.txt

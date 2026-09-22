@@ -92,6 +92,9 @@ FetchContent_MakeAvailable(googletest)
 # CTestを有効化
 enable_testing()
 
+# 標準インストールディレクトリ変数を定義 (bin, lib, include など)
+include(GNUInstallDirs)
+
 # サブプロジェクトを追加
 add_subdirectory(app1)
 add_subdirectory(app2)
@@ -108,4 +111,21 @@ if(DOXYGEN_FOUND)
         VERBATIM
     )
 endif()
+
+#
+# パッケージング設定 (CPack)
+#
+set(CPACK_PACKAGE_NAME "MultiAppProject")
+set(CPACK_PACKAGE_VENDOR "Development Team")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "High-reliability C++17 Multi-App Project")
+set(CPACK_PACKAGE_VERSION_MAJOR 1)
+set(CPACK_PACKAGE_VERSION_MINOR 3)
+set(CPACK_PACKAGE_VERSION_PATCH 0)
+set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+set(CPACK_PACKAGE_CONTACT "dev@example.com")
+
+# 生成するジェネレータ (TGZ: 汎用ポータブル .tar.gz アーカイブ)
+set(CPACK_GENERATOR "TGZ")
+
+include(CPack)
 

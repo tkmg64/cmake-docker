@@ -6,6 +6,7 @@ target_link_libraries(app2_lib PUBLIC project_warnings)
 # main関数を含むソースから実行可能ファイルを作成
 add_executable(app2 src/main2.cpp)
 target_link_libraries(app2 PRIVATE app2_lib project_warnings)
+install(TARGETS app2 DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 #
 # テストの設定

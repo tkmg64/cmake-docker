@@ -3,3 +3,8 @@
 
 # 環境変数・プロキシ設定 (機密情報保護のため Git 対象外)
 .env
+
+# ビルド成果物・配布パッケージ
+dist/
+workspace/dist/
+workspace/build*/

@@ -39,6 +39,10 @@ jobs:
         run: |
           docker compose run --rm cpp-dev ./doc.sh
 
+      - name: Build distribution packages (.tar.gz)
+        run: |
+          docker compose run --rm cpp-dev ./package.sh
+
       - name: Ensure artifacts are readable
         if: always()
         run: |
@@ -66,4 +70,12 @@ jobs:
         with:
           name: doxygen-documentation
           path: workspace/docs/html/
+          if-no-files-found: ignore
+
+      - name: Upload distribution packages
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: distribution-packages
+          path: workspace/dist/*.tar.gz
           if-no-files-found: ignore
