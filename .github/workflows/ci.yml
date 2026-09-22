@@ -24,8 +24,8 @@ jobs:
 
       - name: Set permissions for container user
         run: |
+          sudo chmod -R a+rwX workspace
           sudo chown -R 1000:1000 workspace
-          chmod -R 777 workspace
 
       - name: Run all quality checks (Unit, Static, Memory, Sanitizers, Coverage)
         run: |
