@@ -22,6 +22,11 @@ jobs:
         run: |
           docker compose build
 
+      - name: Set permissions for container user
+        run: |
+          sudo chown -R 1000:1000 workspace
+          chmod -R 777 workspace
+
       - name: Run all quality checks (Unit, Static, Memory, Sanitizers, Coverage)
         run: |
           docker compose run --rm cpp-dev ./test.sh all
@@ -29,6 +34,11 @@ jobs:
       - name: Generate Doxygen SDD documentation
         run: |
           docker compose run --rm cpp-dev ./doc.sh
+
+      - name: Ensure artifacts are readable
+        if: always()
+        run: |
+          sudo chmod -R a+rX workspace
 
       - name: Upload test logs
         if: always()
