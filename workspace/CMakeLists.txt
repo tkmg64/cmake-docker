@@ -96,6 +96,21 @@ endif()
 # 標準インストールディレクトリ変数を定義 (bin, lib, include など)
 include(GNUInstallDirs)
 
+#
+# サードパーティライブラリ (Git サブモジュール方式: オフラインビルド対応)
+#
+set(SPDLOG_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(SPDLOG_BUILD_EXAMPLE OFF CACHE BOOL "" FORCE)
+set(SPDLOG_INSTALL OFF CACHE BOOL "" FORCE)
+set(SPDLOG_SYSTEM_INCLUDES ON CACHE BOOL "" FORCE)
+
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/third_party/spdlog/CMakeLists.txt")
+    add_subdirectory(third_party/spdlog EXCLUDE_FROM_ALL)
+else()
+    message(FATAL_ERROR "spdlog submodule not found at ${CMAKE_CURRENT_SOURCE_DIR}/third_party/spdlog.\n"
+                        "Please run: git submodule update --init --recursive")
+endif()
+
 # サブプロジェクトを追加
 add_subdirectory(app1)
 add_subdirectory(app2)
@@ -141,6 +156,7 @@ set(CPACK_SOURCE_IGNORE_FILES
     "/test_logs/"
     "/docs/"
     "/\.git/"
+    "/\.git$"
     "/\.cache/"
     "/\.vscode/"
     ".*~$"

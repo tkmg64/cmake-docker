@@ -6,6 +6,7 @@
 
 * **コンテナ環境**: `ubuntu:24.04` (非rootの `ubuntu` ユーザーで実行、ファイル権限の競合を解消)
 * **ビルドシステム**: `CMake` (3.25+) + `Ninja` (高速並列ビルド) + `ccache` (コンパイルキャッシュ)
+* **ロギング**: `spdlog` (v1.15.1, Git サブモジュール管理、オフラインビルド対応)
 * **テスト**: `GoogleTest` (v1.15.2, `FetchContent` 経由) + `CTest`
 * **静的・動的解析 & カバレッジ & ドキュメント**:
   * 静的解析: `cppcheck`, `clang-tidy` (MISRA C++:2023 等を参考とした静的解析)
@@ -51,6 +52,23 @@
 ---
 
 ## 使い方
+
+### 0. リポジトリのクローン (Git サブモジュール)
+
+本プロジェクトはサードパーティライブラリ (`spdlog`) を Git サブモジュールとして管理しています。
+クローン時は `--recursive` オプションを指定してサブモジュールごと取得してください：
+
+```bash
+git clone --recursive <リポジトリURL>
+```
+
+すでにクローン済みの場合は、以下のコマンドでサブモジュールを初期化・取得してください：
+
+```bash
+git submodule update --init --recursive
+```
+
+---
 
 ### 方法 A: VS Code Dev Containers を使う場合 (推奨)
 
@@ -331,6 +349,36 @@ docker compose down
 
 ---
 
+## 外部ライブラリの管理 (Git サブモジュール & オフラインビルド対応)
+
+本テンプレートでは、外部ライブラリ（サードパーティ製 C++ ライブラリ）の組み込み方式として **Git サブモジュール + `add_subdirectory`** を採用しています（標準例: `spdlog`）。
+
+### なぜ Git サブモジュール方式なのか？
+1. **完全なオフラインビルド対応**:
+   - `FetchContent` などの自動ダウンロード方式とは異なり、開発環境にコード一式が保持されるため、外部ネットワークから遮断されたオフライン環境（社内閉域網、エアギャップ環境、Yocto/BitBake ビルド等）でも通信エラーなくビルドできます。
+2. **CPack ソースパッケージへの自動同梱**:
+   - `./package.sh source` で生成されるソースアーカイブ (`.tar.gz`) に `workspace/third_party/` 配下のソースコードが丸ごと含まれます。アーカイブを展開するだけで、外部通信なしにターゲット環境でクロスコンパイルが可能です。
+3. **再現性とバージョン固定**:
+   - Git のコミットハッシュ単位で正確にバージョンが固定されるため、依存ライブラリの意図しない破壊的変更を防ぎます。
+
+### 新しい外部ライブラリを追加する手順
+ホスト環境（リポジトリルート）で以下を実行します：
+
+```bash
+# 1. workspace/third_party/<ライブラリ名> にサブモジュールを追加
+git submodule add <GitリポジトリURL> workspace/third_party/<ライブラリ名>
+
+# 2. 必要に応じて特定タグ/コミットにチェックアウト
+cd workspace/third_party/<ライブラリ名>
+git checkout <タグ名>
+cd ../../
+
+# 3. workspace/CMakeLists.txt に add_subdirectory を追加
+# 4. アプリケーションの CMakeLists.txt で target_link_libraries に追加
+```
+
+---
+
 ## ディレクトリ構成
 
 ```
@@ -384,5 +432,7 @@ docker compose down
 │       │   └── main.cpp              # main 関数
 │       └── test/
 │           └── test2.cpp             # 文字列処理単体テスト
+│   └── third_party/    # サードパーティ外部ライブラリ (Git サブモジュール)
+│       └── spdlog/     # spdlog 高速ロギングライブラリ (オフラインビルド対応)
 └── README.md           # 本ドキュメント
 ```

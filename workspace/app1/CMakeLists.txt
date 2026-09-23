@@ -10,7 +10,7 @@ target_include_directories(app1_lib
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
-target_link_libraries(app1_lib PUBLIC project_warnings)
+target_link_libraries(app1_lib PUBLIC project_warnings spdlog::spdlog)
 
 # main関数を含むソースから実行可能ファイルを作成
 add_executable(app1 src/main.cpp)
