@@ -17,11 +17,13 @@ target_link_libraries(app2 PRIVATE app2_lib project_warnings)
 install(TARGETS app2 DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 #
-# テストの設定
+# テストの設定 (BUILD_TESTING が有効な場合のみビルド)
 #
-add_executable(app2_test test/test2.cpp)
-target_link_libraries(app2_test PRIVATE app2_lib GTest::gtest_main project_warnings)
+if(BUILD_TESTING)
+    add_executable(app2_test test/test2.cpp)
+    target_link_libraries(app2_test PRIVATE app2_lib GTest::gtest_main project_warnings)
 
-# GoogleTestの自動検出
-include(GoogleTest)
-gtest_discover_tests(app2_test)
+    # GoogleTestの自動検出
+    include(GoogleTest)
+    gtest_discover_tests(app2_test)
+endif()

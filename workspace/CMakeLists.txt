@@ -74,23 +74,24 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 endif()
 
 #
-# GoogleTestのセットアップ (FetchContent)
+# テストのセットアップ (BUILD_TESTING が ON の場合のみ GoogleTest を取得)
+# Yocto 等のクロスコンパイル環境では -DBUILD_TESTING=OFF で外部通信とテストビルドを無効化可能
 #
-include(FetchContent)
-FetchContent_Declare(
-    googletest
-    GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG        v1.15.2
-)
-# サードパーティのテストやインストール処理を無効化
-set(gtest_build_tests OFF CACHE BOOL "" FORCE)
-set(gmock_build_tests OFF CACHE BOOL "" FORCE)
-set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
+include(CTest)
+if(BUILD_TESTING)
+    include(FetchContent)
+    FetchContent_Declare(
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG        v1.15.2
+    )
+    # サードパーティのテストやインストール処理を無効化
+    set(gtest_build_tests OFF CACHE BOOL "" FORCE)
+    set(gmock_build_tests OFF CACHE BOOL "" FORCE)
+    set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
 
-FetchContent_MakeAvailable(googletest)
-
-# CTestを有効化
-enable_testing()
+    FetchContent_MakeAvailable(googletest)
+endif()
 
 # 標準インストールディレクトリ変数を定義 (bin, lib, include など)
 include(GNUInstallDirs)
@@ -124,8 +125,28 @@ set(CPACK_PACKAGE_VERSION_PATCH 0)
 set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
 set(CPACK_PACKAGE_CONTACT "dev@example.com")
 
-# 生成するジェネレータ (TGZ: 汎用ポータブル .tar.gz アーカイブ)
+# バイナリアーカイブ設定 (TGZ: .tar.gz)
 set(CPACK_GENERATOR "TGZ")
+
+# ソースアーカイブ設定 (Yocto / BitBake 等のクロスビルド向け)
+set(CPACK_SOURCE_GENERATOR "TGZ")
+set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-Source")
+set(CPACK_SOURCE_IGNORE_FILES
+    "/build.*/"
+    "/build_release/"
+    "/build_coverage/"
+    "/build_asan/"
+    "/dist/"
+    "/coverage_report/"
+    "/test_logs/"
+    "/docs/"
+    "/\.git/"
+    "/\.cache/"
+    "/\.vscode/"
+    ".*~$"
+    "\\\\.swp$"
+    "\\\\.DS_Store$"
+)
 
 include(CPack)
 

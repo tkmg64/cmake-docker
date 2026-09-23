@@ -213,24 +213,43 @@ VS Code の **「テスト」パネル（ビーカーアイコン）** および
 
 ---
 
-### 配布用ポータブルアーカイブ (.tar.gz) の生成 (CPack)
+### 配布用アーカイブ (.tar.gz) の生成 & Yocto (BitBake) 対応 (CPack)
 
-CMake 標準の **CPack** を利用して、リリース用バイナリ（`app1`, `app2`）をまとめたポータブルな配布用アーカイブ（`.tar.gz`）を自動生成できます。
+CMake 標準の **CPack** を利用して、実行用バイナリアーカイブおよび Yocto (BitBake) レシピに指定可能な **ソースコードアーカイブ** を自動生成できます。
 
 ```bash
-# 配布用アーカイブを生成
+# バイナリとソースの両アーカイブを生成 (デフォルト)
+./package.sh all
+# または短縮形
 ./package.sh
+
+# Yocto (BitBake) 向けソースアーカイブのみを高速生成 (コンパイル不要)
+./package.sh source
+
+# 配布用バイナリアーカイブのみを生成
+./package.sh bin
+
 # または test.sh 経由: ./test.sh package
 ```
 
-生成されたアーカイブは `workspace/dist/` に出力されます。
+生成されたアーカイブは `workspace/dist/` に出力され、ターミナル上に **SHA-256 チェックサム** が表示されます。
 
 ```text
 dist/
-└── MultiAppProject-1.0.0-Linux.tar.gz
+├── MultiAppProject-1.0.0-Linux.tar.gz    # 実行可能バイナリ配布パッケージ
+└── MultiAppProject-1.0.0-Source.tar.gz   # Yocto (BitBake) レシピ用ソースアーカイブ
 ```
 
-#### アーカイブの展開と実行方法
+#### Yocto (BitBake) での利用
+Yocto のクロスコンパイル環境（ARM/AArch64等）でビルドする際は、ソースアーカイブ `MultiAppProject-1.0.0-Source.tar.gz` をレシピの `SRC_URI` に指定します。
+
+* サンプルレシピ: `workspace/yocto/multiappproject_1.0.0.bb`
+* 詳細な組み込み手順: `workspace/yocto/README.md`
+
+> [!TIP]
+> CMake の `BUILD_TESTING=OFF` に対応しているため、Yocto のオフラインビルド環境でも GoogleTest (FetchContent) の外部ダウンロードを発生させずにクリーンにビルドできます。
+
+#### バイナリアーカイブの展開と実行方法 (ホスト環境)
 管理者権限（root）は不要です。任意のディレクトリで解凍するだけで即座に実行できます。
 
 ```bash
@@ -243,7 +262,7 @@ tar -xzf MultiAppProject-1.0.0-Linux.tar.gz
 ```
 
 > [!NOTE]
-> GitHub Actions CI でも自動的に `.tar.gz` パッケージがビルドされ、CI 実行結果の「Artifacts」からダウンロード可能です。
+> GitHub Actions CI でも自動的に `.tar.gz` パッケージ（バイナリおよびソース）が生成され、CI 実行結果の「Artifacts」からダウンロード可能です。
 
 ---
 

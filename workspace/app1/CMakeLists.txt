@@ -18,11 +18,13 @@ target_link_libraries(app1 PRIVATE app1_lib project_warnings)
 install(TARGETS app1 DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 #
-# テストの設定 (GoogleTest + GoogleMock)
+# テストの設定 (BUILD_TESTING が有効な場合のみビルド)
 #
-add_executable(app1_test test/test_math.cpp test/test_mock.cpp)
-target_link_libraries(app1_test PRIVATE app1_lib GTest::gtest_main GTest::gmock project_warnings)
+if(BUILD_TESTING)
+    add_executable(app1_test test/test_math.cpp test/test_mock.cpp)
+    target_link_libraries(app1_test PRIVATE app1_lib GTest::gtest_main GTest::gmock project_warnings)
 
-# GoogleTestの自動検出
-include(GoogleTest)
-gtest_discover_tests(app1_test)
+    # GoogleTestの自動検出
+    include(GoogleTest)
+    gtest_discover_tests(app1_test)
+endif()
