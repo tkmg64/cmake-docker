@@ -2,10 +2,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "app1 (Debug)",
+      "name": "app (Debug)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/workspace/build/app1/app1",
+      "program": "${workspaceFolder}/workspace/build/debug/app/app",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}/workspace",
@@ -23,52 +23,10 @@
       "preLaunchTask": "Build (Debug)"
     },
     {
-      "name": "app2 (Debug)",
+      "name": "app_test (Debug)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/workspace/build/app2/app2",
-      "args": [],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}/workspace",
-      "environment": [],
-      "externalConsole": false,
-      "MIMode": "gdb",
-      "miDebuggerPath": "/usr/bin/gdb",
-      "setupCommands": [
-        {
-          "description": "gdb のインデント表示を有効にする",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        }
-      ],
-      "preLaunchTask": "Build (Debug)"
-    },
-    {
-      "name": "app1_test (Debug)",
-      "type": "cppdbg",
-      "request": "launch",
-      "program": "${workspaceFolder}/workspace/build/app1/app1_test",
-      "args": [],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}/workspace",
-      "environment": [],
-      "externalConsole": false,
-      "MIMode": "gdb",
-      "miDebuggerPath": "/usr/bin/gdb",
-      "setupCommands": [
-        {
-          "description": "gdb のインデント表示を有効にする",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        }
-      ],
-      "preLaunchTask": "Build (Debug)"
-    },
-    {
-      "name": "app2_test (Debug)",
-      "type": "cppdbg",
-      "request": "launch",
-      "program": "${workspaceFolder}/workspace/build/app2/app2_test",
+      "program": "${workspaceFolder}/workspace/build/debug/app/app_test",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}/workspace",

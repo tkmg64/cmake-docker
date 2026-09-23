@@ -31,19 +31,19 @@ jobs:
 
       - name: Check code formatting (clang-format)
         run: |
-          docker compose run --rm cpp-dev ./format.sh check
+          docker compose run --rm cpp-dev ./scripts/format.sh check
 
       - name: Run all quality checks (Unit, Static, Memory, Sanitizers, Coverage)
         run: |
-          docker compose run --rm cpp-dev ./test.sh all
+          docker compose run --rm cpp-dev ./scripts/test.sh all
 
       - name: Generate Doxygen SDD documentation
         run: |
-          docker compose run --rm cpp-dev ./doc.sh
+          docker compose run --rm cpp-dev ./scripts/doc.sh
 
       - name: Build distribution packages (.tar.gz)
         run: |
-          docker compose run --rm cpp-dev ./package.sh
+          docker compose run --rm cpp-dev ./scripts/package.sh
 
       - name: Ensure artifacts are readable
         if: always()
@@ -55,7 +55,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-logs
-          path: workspace/test_logs/
+          path: workspace/build/reports/logs/
           if-no-files-found: ignore
 
       - name: Upload coverage report
@@ -63,7 +63,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: workspace/coverage_report/
+          path: workspace/build/reports/coverage/
           if-no-files-found: ignore
 
       - name: Upload Doxygen HTML documentation
@@ -71,7 +71,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: doxygen-documentation
-          path: workspace/docs/html/
+          path: workspace/build/reports/docs/html/
           if-no-files-found: ignore
 
       - name: Upload distribution packages
@@ -79,5 +79,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: distribution-packages
-          path: workspace/dist/*.tar.gz
+          path: workspace/build/dist/*.tar.gz
           if-no-files-found: ignore

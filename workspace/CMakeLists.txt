@@ -96,24 +96,8 @@ endif()
 # 標準インストールディレクトリ変数を定義 (bin, lib, include など)
 include(GNUInstallDirs)
 
-#
-# サードパーティライブラリ (Git サブモジュール方式: オフラインビルド対応)
-#
-set(SPDLOG_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(SPDLOG_BUILD_EXAMPLE OFF CACHE BOOL "" FORCE)
-set(SPDLOG_INSTALL OFF CACHE BOOL "" FORCE)
-set(SPDLOG_SYSTEM_INCLUDES ON CACHE BOOL "" FORCE)
-
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/third_party/spdlog/CMakeLists.txt")
-    add_subdirectory(third_party/spdlog EXCLUDE_FROM_ALL)
-else()
-    message(FATAL_ERROR "spdlog submodule not found at ${CMAKE_CURRENT_SOURCE_DIR}/third_party/spdlog.\n"
-                        "Please run: git submodule update --init --recursive")
-endif()
-
 # サブプロジェクトを追加
-add_subdirectory(app1)
-add_subdirectory(app2)
+add_subdirectory(app)
 
 #
 # Doxygen ドキュメント生成ターゲット (doc)
@@ -121,7 +105,7 @@ add_subdirectory(app2)
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
     add_custom_target(doc
-        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
+        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/doxygen/Doxyfile
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "Generating API documentation with Doxygen..."
         VERBATIM
@@ -147,14 +131,7 @@ set(CPACK_GENERATOR "TGZ")
 set(CPACK_SOURCE_GENERATOR "TGZ")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-Source")
 set(CPACK_SOURCE_IGNORE_FILES
-    "/build.*/"
-    "/build_release/"
-    "/build_coverage/"
-    "/build_asan/"
-    "/dist/"
-    "/coverage_report/"
-    "/test_logs/"
-    "/docs/"
+    "/build/"
     "/\.git/"
     "/\.git$"
     "/\.cache/"

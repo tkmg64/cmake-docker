@@ -11,7 +11,7 @@
       "displayName": "Default (Ninja)",
       "description": "Default configuration using Ninja generator",
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build",
+      "binaryDir": "${sourceDir}/build/default",
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       }
@@ -20,6 +20,7 @@
       "name": "debug",
       "displayName": "Debug",
       "inherits": "default",
+      "binaryDir": "${sourceDir}/build/debug",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
       }
@@ -28,6 +29,7 @@
       "name": "release",
       "displayName": "Release",
       "inherits": "default",
+      "binaryDir": "${sourceDir}/build/release",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
@@ -36,7 +38,7 @@
       "name": "coverage",
       "displayName": "Coverage",
       "inherits": "default",
-      "binaryDir": "${sourceDir}/build_coverage",
+      "binaryDir": "${sourceDir}/build/coverage",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Coverage"
       }
@@ -45,7 +47,7 @@
       "name": "asan",
       "displayName": "Address & UB Sanitizer",
       "inherits": "default",
-      "binaryDir": "${sourceDir}/build_asan",
+      "binaryDir": "${sourceDir}/build/asan",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "ENABLE_SANITIZER": "ON"

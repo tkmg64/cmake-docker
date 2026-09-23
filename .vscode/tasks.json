@@ -27,7 +27,7 @@
     {
       "label": "Format Code",
       "type": "shell",
-      "command": "./format.sh",
+      "command": "./scripts/format.sh",
       "options": {
         "cwd": "${workspaceFolder}/workspace"
       },
@@ -36,7 +36,7 @@
     {
       "label": "Run All Tests & Checks",
       "type": "shell",
-      "command": "./test.sh all",
+      "command": "./scripts/test.sh all",
       "options": {
         "cwd": "${workspaceFolder}/workspace"
       },
@@ -46,7 +46,7 @@
     {
       "label": "Package (.tar.gz)",
       "type": "shell",
-      "command": "./package.sh",
+      "command": "./scripts/package.sh",
       "options": {
         "cwd": "${workspaceFolder}/workspace"
       },

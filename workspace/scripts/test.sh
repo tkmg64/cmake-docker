@@ -3,7 +3,7 @@
 # test.sh - テスト、静的解析、メモリ解析、カバレッジ計測を実行する統合スクリプト
 #
 # 使い方:
-# ./test.sh [unit|static|tidy|memory|asan|coverage|doc|format|format-check|package|all]
+# ./scripts/test.sh [unit|static|tidy|memory|asan|coverage|doc|format|format-check|package|all]
 #
 # 引数なし or unit: ユニットテスト (ctest) を実行
 # static:         静的解析 (cppcheck + clang-tidy) を実行
@@ -19,19 +19,19 @@
 #
 
 set -euo pipefail
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 # ログディレクトリの定義と作成
-LOG_DIR="test_logs"
+LOG_DIR="build/reports/logs"
 mkdir -p "$LOG_DIR"
 
 # --- 関数定義 ---
 
 # ビルドディレクトリの存在を確認し、なければビルドを実行
 ensure_build() {
-  if [ ! -d "build" ]; then
-    echo "ビルドディレクトリが見つかりません。./build.sh を実行します..."
-    ./build.sh
+  if [ ! -d "build/debug" ]; then
+    echo "ビルドディレクトリが見つかりません。./scripts/build.sh Debug を実行します..."
+    ./scripts/build.sh Debug
   fi
 }
 
@@ -43,7 +43,7 @@ run_unit_test() {
   echo "----------------------------------------"
   ensure_build
   local log_file="$LOG_DIR/unit_test.log"
-  ctest --test-dir build --output-on-failure 2>&1 | tee "$log_file"
+  ctest --test-dir build/debug --output-on-failure 2>&1 | tee "$log_file"
   echo "--> ユニットテストのログを保存しました: $log_file"
 }
 
@@ -55,8 +55,8 @@ run_cppcheck() {
   echo "----------------------------------------"
   local log_file="$LOG_DIR/static_check.log"
   cppcheck --enable=all --suppress=missingIncludeSystem \
-    -I app1/include -I app2/include \
-    app1/include app1/src app2/include app2/src 2>&1 | tee "$log_file"
+    -I app/include \
+    app/include app/src 2>&1 | tee "$log_file"
   echo "--> cppcheck のログを保存しました: $log_file"
 }
 
@@ -71,13 +71,11 @@ run_clang_tidy() {
   
   # compile_commands.json を利用してソースコードをチェック
   local source_files=(
-    app1/src/math/add.cpp
-    app1/src/main.cpp
-    app2/src/app2.cpp
-    app2/src/main.cpp
+    app/src/math/add.cpp
+    app/src/main.cpp
   )
   
-  clang-tidy -p build "${source_files[@]}" 2>&1 | tee "$log_file"
+  clang-tidy -p build/debug "${source_files[@]}" 2>&1 | tee "$log_file"
   echo "--> clang-tidy のログを保存しました: $log_file"
 }
 
@@ -96,11 +94,8 @@ run_memory_check() {
   ensure_build
   local log_file="$LOG_DIR/memory_check.log"
   {
-    echo "=== Valgrind: app1_test ==="
-    valgrind --leak-check=full --show-leak-kinds=all ./build/app1/app1_test
-    echo ""
-    echo "=== Valgrind: app2_test ==="
-    valgrind --leak-check=full --show-leak-kinds=all ./build/app2/app2_test
+    echo "=== Valgrind: app_test ==="
+    valgrind --leak-check=full --show-leak-kinds=all ./build/debug/app/app_test
   } 2>&1 | tee "$log_file"
   echo "--> メモリ解析のログを保存しました: $log_file"
 }
@@ -133,8 +128,8 @@ run_coverage() {
   echo "--- カバレッジ計測を実行しています ---"
   echo "----------------------------------------"
   
-  BUILD_DIR="build_coverage"
-  OUTPUT_DIR="coverage_report"
+  BUILD_DIR="build/coverage"
+  OUTPUT_DIR="build/reports/coverage"
   local log_file="$LOG_DIR/coverage.log"
 
   if [ -d "$BUILD_DIR" ]; then
@@ -212,19 +207,19 @@ for arg in "$@"; do
       run_coverage
       ;;
     doc)
-      ./doc.sh
+      ./scripts/doc.sh
       ;;
     format)
-      ./format.sh apply
+      ./scripts/format.sh apply
       ;;
     format-check)
-      ./format.sh check
+      ./scripts/format.sh check
       ;;
     package)
-      ./package.sh all
+      ./scripts/package.sh all
       ;;
     all)
-      ./format.sh check
+      ./scripts/format.sh check
       run_unit_test
       run_static_check
       run_memory_check

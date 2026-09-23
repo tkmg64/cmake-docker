@@ -33,6 +33,6 @@ inherit cmake
 EXTRA_OECMAKE += "-DBUILD_TESTING=OFF"
 
 # パッケージに含めるファイル指定
-# app1, app2 は CMAKE_INSTALL_BINDIR (/usr/bin) にインストールされるため、
+# app は CMAKE_INSTALL_BINDIR (/usr/bin) にインストールされるため、
 # 通常はデフォルト設定で ${PN} パッケージに含まれます。明示指定する場合は以下をアンコメントしてください。
-# FILES:${PN} += "${bindir}/app1 ${bindir}/app2"
+# FILES:${PN} += "${bindir}/app"

@@ -3,7 +3,7 @@
 # package.sh - 配布用アーカイブ (.tar.gz) を生成するスクリプト (CPack)
 #
 # 使い方:
-#   ./package.sh [all|source|bin]
+#   ./scripts/package.sh [all|source|bin]
 #     all    : バイナリとソースアーカイブの両方を生成 (デフォルト)
 #     source : Yocto (BitBake) 向けのソースアーカイブのみを高速生成
 #     bin    : 実行可能バイナリ配布用のアーカイブのみを生成
@@ -11,11 +11,11 @@
 
 set -euo pipefail
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 MODE="${1:-all}"
-BUILD_DIR="build_release"
-DIST_DIR="dist"
+BUILD_DIR="build/release"
+DIST_DIR="build/dist"
 
 mkdir -p "$DIST_DIR"
 
@@ -32,9 +32,7 @@ case "$MODE" in
 
     echo ""
     echo "--- [2/2] CPack でソースアーカイブ (.tar.gz) を生成しています ---"
-    cd "$BUILD_DIR"
-    cpack --config CPackSourceConfig.cmake
-    cd ..
+    (cd "$BUILD_DIR" && cpack --config CPackSourceConfig.cmake)
     ;;
 
   bin)
@@ -49,9 +47,7 @@ case "$MODE" in
 
     echo ""
     echo "--- [3/3] CPack でバイナリアーカイブ (.tar.gz) を生成しています ---"
-    cd "$BUILD_DIR"
-    cpack -G TGZ
-    cd ..
+    (cd "$BUILD_DIR" && cpack -G TGZ)
     ;;
 
   all)
@@ -66,13 +62,11 @@ case "$MODE" in
 
     echo ""
     echo "--- [3/4] CPack でバイナリアーカイブ (.tar.gz) を生成しています ---"
-    cd "$BUILD_DIR"
-    cpack -G TGZ
+    (cd "$BUILD_DIR" && cpack -G TGZ)
 
     echo ""
     echo "--- [4/4] CPack でソースアーカイブ (.tar.gz: Yocto向け) を生成しています ---"
-    cpack --config CPackSourceConfig.cmake
-    cd ..
+    (cd "$BUILD_DIR" && cpack --config CPackSourceConfig.cmake)
     ;;
 
   *)

@@ -3,17 +3,17 @@
 PROJECT_NAME           = "MultiAppProject ソフトウェア詳細設計書"
 PROJECT_NUMBER         = "1.0.0"
 PROJECT_BRIEF          = "C++17 / MISRA C++:2023 を参考としたアーキテクチャおよびモジュール詳細仕様"
-OUTPUT_DIRECTORY       = docs
+OUTPUT_DIRECTORY       = build/reports/docs
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = Japanese
 DOXYFILE_ENCODING      = UTF-8
 
 # 入力設定
-INPUT                  = docs_src app1/include app1/src app2/include app2/src
+INPUT                  = doxygen/src app/include app/src
 RECURSIVE              = YES
 FILE_PATTERNS          = *.cpp *.h *.hpp *.dox
-EXCLUDE_PATTERNS       = */build/* */build_release/* */build_coverage/* */_deps/* */test/*
-STRIP_FROM_PATH        = docs_src app1/include app2/include
+EXCLUDE_PATTERNS       = */build/* */_deps/* */test/*
+STRIP_FROM_PATH        = doxygen/src app/include
 
 # 詳細設計書向け抽出設定 (非公開要素や内部実装も漏れなく抽出)
 EXTRACT_ALL            = YES

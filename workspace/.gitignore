@@ -1,14 +1,5 @@
-# CMake/ビルド関連のディレクトリ
+# ビルド中間生成物・レポート・配布アーカイブ (すべて集約)
 build/
-build_release/
-build_coverage/
-build_asan/
-dist/
-
-# カバレッジレポート、テストログ、Doxygenドキュメントの出力ディレクトリ
-coverage_report/
-test_logs/
-docs/
 
 # IDE/エディタ固有の設定ファイル
 .vscode/

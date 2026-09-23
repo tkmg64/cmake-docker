@@ -12,16 +12,16 @@ Yocto のビルドでは、ホスト側でビルドしたバイナリではな�
 
 ```bash
 # Yocto向けソースアーカイブを生成 (コンパイル不要で高速)
-./package.sh source
+./scripts/package.sh source
 
 # または バイナリとソース両方を生成
-./package.sh all
+./scripts/package.sh all
 ```
 
-生成されたアーカイブは `workspace/dist/` に出力され、ターミナル上に **SHA-256 チェックサム** が表示されます。
+生成されたアーカイブは `workspace/build/dist/` に出力され、ターミナル上に **SHA-256 チェックサム** が表示されます。
 
 ```text
-dist/
+build/dist/
 └── MultiAppProject-1.0.0-Source.tar.gz
 ```
 
@@ -52,7 +52,7 @@ meta-my-layer/
    ```
 3. 生成したソースアーカイブを `files/` にコピー：
    ```bash
-   cp workspace/dist/MultiAppProject-1.0.0-Source.tar.gz meta-my-layer/recipes-apps/multiappproject/files/
+   cp workspace/build/dist/MultiAppProject-1.0.0-Source.tar.gz meta-my-layer/recipes-apps/multiappproject/files/
    ```
 
 ---
@@ -67,7 +67,7 @@ Yocto のビルドタスクは通常、外部ネットワークへのアクセ�
 本プロジェクトでは `EXTRA_OECMAKE += "-DBUILD_TESTING=OFF"` を指定することで、GoogleTest の `FetchContent`（GitHubからのダウンロード）とテストバイナリのビルドを無効化し、オフライン環境でも確実にビルドできるようにしています。
 
 ### ③ インストール先とパッケージング
-`app1` および `app2` は CMake の `install(TARGETS ... DESTINATION ${CMAKE_INSTALL_BINDIR})` により、ターゲットの `/usr/bin/app1`, `/usr/bin/app2` にインストールされます。
+`app` は CMake の `install(TARGETS ... DESTINATION ${CMAKE_INSTALL_BINDIR})` により、ターゲットの `/usr/bin/app` にインストールされます。
 
 ---
 

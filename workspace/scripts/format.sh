@@ -3,16 +3,16 @@
 # format.sh - clang-format を使用してソースコードを整形・検証するスクリプト
 #
 # 使い方:
-# ./format.sh        # 全コードを一括フォーマット (apply)
-# ./format.sh check  # フォーマット崩れがないか検証 (CI用: 差分があればエラー終了)
+# ./scripts/format.sh        # 全コードを一括フォーマット (apply)
+# ./scripts/format.sh check  # フォーマット崩れがないか検証 (CI用: 差分があればエラー終了)
 #
 
 set -euo pipefail
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 MODE="${1:-apply}"
 
-TARGET_DIRS=("app1" "app2")
+TARGET_DIRS=("app")
 
 # 対象拡張子: .cpp, .h, .hpp
 find_source_files() {
