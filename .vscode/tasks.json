@@ -15,6 +15,16 @@
       "problemMatcher": "$gcc"
     },
     {
+      "label": "Build (Debug + Clang-Tidy)",
+      "type": "shell",
+      "command": "cmake --preset debug-tidy && cmake --build --preset debug-tidy",
+      "options": {
+        "cwd": "${workspaceFolder}/workspace"
+      },
+      "group": "build",
+      "problemMatcher": "$gcc"
+    },
+    {
       "label": "Build (Release)",
       "type": "shell",
       "command": "cmake --preset release && cmake --build --preset release",
@@ -25,13 +35,14 @@
       "problemMatcher": "$gcc"
     },
     {
-      "label": "Format Code",
+      "label": "Run Static Analysis (cppcheck & clang-tidy)",
       "type": "shell",
-      "command": "./scripts/format.sh",
+      "command": "./scripts/test.sh static",
       "options": {
         "cwd": "${workspaceFolder}/workspace"
       },
-      "problemMatcher": []
+      "group": "test",
+      "problemMatcher": "$gcc"
     },
     {
       "label": "Run All Tests & Checks",
@@ -41,6 +52,15 @@
         "cwd": "${workspaceFolder}/workspace"
       },
       "group": "test",
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "Format Code",
+      "type": "shell",
+      "command": "./scripts/format.sh",
+      "options": {
+        "cwd": "${workspaceFolder}/workspace"
+      },
       "problemMatcher": []
     },
     {

@@ -39,13 +39,6 @@ endif()
 
 # オプション: ビルド時のclang-tidy自動実行
 option(ENABLE_CLANG_TIDY "Enable clang-tidy static analysis during build" OFF)
-if(ENABLE_CLANG_TIDY)
-    find_program(CLANG_TIDY_PROGRAM clang-tidy)
-    if(CLANG_TIDY_PROGRAM)
-        set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_PROGRAM}")
-        message(STATUS "clang-tidy enabled: ${CLANG_TIDY_PROGRAM}")
-    endif()
-endif()
 
 # プロジェクト共通の警告フラグ設定 (MISRA C++:2023 などの安全ガイドラインを参考)
 add_library(project_warnings INTERFACE)
@@ -95,6 +88,15 @@ endif()
 
 # 標準インストールディレクトリ変数を定義 (bin, lib, include など)
 include(GNUInstallDirs)
+
+# サブプロジェクト (app) に適用する clang-tidy の有効化 (サードパーティへの不要なチェックを回避)
+if(ENABLE_CLANG_TIDY)
+    find_program(CLANG_TIDY_PROGRAM clang-tidy)
+    if(CLANG_TIDY_PROGRAM)
+        set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_PROGRAM}")
+        message(STATUS "clang-tidy enabled for project targets: ${CLANG_TIDY_PROGRAM}")
+    endif()
+endif()
 
 # サブプロジェクトを追加
 add_subdirectory(app)

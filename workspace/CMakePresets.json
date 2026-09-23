@@ -52,6 +52,15 @@
         "CMAKE_BUILD_TYPE": "Debug",
         "ENABLE_SANITIZER": "ON"
       }
+    },
+    {
+      "name": "debug-tidy",
+      "displayName": "Debug (with Clang-Tidy)",
+      "description": "Debug build with clang-tidy enabled during compilation",
+      "inherits": "debug",
+      "cacheVariables": {
+        "ENABLE_CLANG_TIDY": "ON"
+      }
     }
   ],
   "buildPresets": [
@@ -74,6 +83,10 @@
     {
       "name": "asan",
       "configurePreset": "asan"
+    },
+    {
+      "name": "debug-tidy",
+      "configurePreset": "debug-tidy"
     }
   ],
   "testPresets": [
