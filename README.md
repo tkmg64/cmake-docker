@@ -1,6 +1,6 @@
 # C++ 開発環境 (Docker + Modern CMake)
 
-Docker コンテナ化された C++17 開発環境テンプレートです。CMake、Ninja、ccache、GoogleTest、静的・動的解析（cppcheck, clang-tidy, valgrind, ASan）が統合されており、ホスト環境を汚さずに高速にビルド・テストを実行できます。
+Docker コンテナ化された C++17 開発環境テンプレートです。CMake、Ninja、ccache、GoogleTest、静的・動的解析（cppcheck, clang-tidy, valgrind, ASan）、規模計測（cloc）が統合されており、ホスト環境を汚さずに高速にビルド・テストを実行できます。
 
 ---
 
@@ -34,8 +34,13 @@ docker compose exec cpp-dev ./build/debug/app/app
 # ユニットテスト (GoogleTest & GoogleMock)
 docker compose exec cpp-dev ./scripts/test.sh unit
 
-# 全品質チェック一括実行 (単体テスト・静的解析・Valgrind・ASan・カバレッジ)
+# 全品質チェック一括実行 (単体テスト・静的解析・Valgrind・ASan・カバレッジ・規模計測)
 docker compose exec cpp-dev ./scripts/test.sh all
+
+# コード規模・KL数 (ステップ数) の計測 (cloc)
+docker compose exec cpp-dev ./scripts/test.sh loc
+# または単独スクリプトで実行 (任意でパス指定も可能: ./scripts/loc.sh app/src)
+docker compose exec cpp-dev ./scripts/loc.sh
 
 # コードフォーマット (整形 / 検証)
 docker compose exec cpp-dev ./scripts/format.sh

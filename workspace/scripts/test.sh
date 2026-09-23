@@ -3,7 +3,7 @@
 # test.sh - テスト、静的解析、メモリ解析、カバレッジ計測を実行する統合スクリプト
 #
 # 使い方:
-# ./scripts/test.sh [unit|static|tidy|memory|asan|coverage|doc|format|format-check|package|all] [--strict]
+# ./scripts/test.sh [unit|static|tidy|memory|asan|coverage|doc|format|format-check|package|loc|all] [--strict]
 #
 # 引数なし or unit: ユニットテスト (ctest) を実行
 # static:         静的解析 (cppcheck + clang-tidy) を実行
@@ -15,7 +15,8 @@
 # format:         コードフォーマットを一括適用
 # format-check:   コードフォーマット崩れの有無を検証
 # package:        配布用アーカイブ (.tar.gz) を生成
-# all:            format-check, unit, static, memory, asan, coverage の全てのチェックを実行
+# loc (or kl):    コード規模・行数計測 (cloc によるステップ数 / KL数算出) を実行
+# all:            format-check, unit, static, memory, asan, coverage, loc の全てのチェックを実行
 #
 # オプション:
 # --strict:       静的解析で指摘・警告が1件でもあれば非ゼロ終了 (exit 1) します。
@@ -298,6 +299,9 @@ for arg in "${filtered_args[@]}"; do
     package)
       ./scripts/package.sh all
       ;;
+    loc|kl)
+      ./scripts/loc.sh
+      ;;
     all)
       ./scripts/format.sh check
       run_unit_test
@@ -305,10 +309,11 @@ for arg in "${filtered_args[@]}"; do
       run_memory_check
       run_sanitizer
       run_coverage
+      ./scripts/loc.sh
       ;;
     *)
       echo "エラー: 不明な引数 '$arg'" >&2
-      echo "使い方: $0 [unit|static|tidy|memory|asan|coverage|doc|format|format-check|package|all] [--strict]" >&2
+      echo "使い方: $0 [unit|static|tidy|memory|asan|coverage|doc|format|format-check|package|loc|all] [--strict]" >&2
       exit 1
       ;;
   esac
